@@ -20,5 +20,5 @@ This step will help you to:
 
 3. Configure the database
 
-
+You can use ./upload.cmd to upload the project to Github.
 Document wait to be updated.

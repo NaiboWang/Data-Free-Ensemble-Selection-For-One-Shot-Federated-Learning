@@ -4,6 +4,7 @@ if "%one%"=="" (
 set remark="Update") else (
 set remark=%1)
 
+
 git status
 git add .
 git commit -m %remark%
