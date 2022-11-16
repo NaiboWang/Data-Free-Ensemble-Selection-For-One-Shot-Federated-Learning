@@ -1,0 +1,9 @@
+models/*
+files/*
+__pycache__/
+.idea/
+.ipynb_checkpoints/
+dbconfig.py
+exp_results/data/*
+exp_results/shells/*
+exp_results/logs/*
