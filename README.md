@@ -1,5 +1,24 @@
 # Ensemble Selection for One-Shot Federated Learning in Machine Learning Model Market
 
-First, please rename dbconfig_init.py to dbconfig.py and fill in the database information.
+## Initialization
 
-document wait to be updated.
+1. Install the required packages
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Initialize the environment and files
+
+```bash
+python init.py
+```
+
+This step will help you to:
+* Make the directory for the algorithm.
+* Rename `dbconfig_init.py` to `dbconfig.py` and then you need to artificially fill in the database information.
+
+3. Configure the database
+
+
+Document wait to be updated.
