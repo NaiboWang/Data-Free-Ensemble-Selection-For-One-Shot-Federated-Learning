@@ -4,7 +4,7 @@ normalization=1
 selection_method="mixed"
 last_layer=0
 dr_method='[\"noDimensionReduction\",0.3]'
-rm -f exp_results/shells/batch_ensemble_$batch_ensemble\_baselines.sh
+rm -f ../exp_results/shells/batch_ensemble_$batch_ensemble\_baselines.sh
 echo "cd ../../" >> ../exp_results/shells/batch_ensemble_$batch_ensemble\_remaining.sh
 # For data generation
 

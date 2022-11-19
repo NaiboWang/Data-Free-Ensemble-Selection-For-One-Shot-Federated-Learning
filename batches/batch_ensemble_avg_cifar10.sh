@@ -6,7 +6,7 @@ last_layer=0
 avg=$3
 device=$4
 dr_method='[\"noDimensionReduction\",0.3]'
-rm -f exp_results/shells/batch_ensemble_$batch_ensemble\_$avg.sh
+rm -f ../exp_results/shells/batch_ensemble_$batch_ensemble\_$avg.sh
 # For data generation
 echo "python -u ensemble_selection_baselines.py --split cifar10 --model $5 --dataset cifar10 --input_channels 3 --num_classes 10 --party_num 50 --label_distribution --K 10 --batch $batch --avg $avg --batch_ensemble $batch_ensemble --selection_method $selection_method --normalization $normalization --last_layer $last_layer --device $device --dr_method $dr_method >> exp_results/logs/batch_$batch_ensemble.log 2>> exp_results/logs/batch_$batch_ensemble.log" >> ../exp_results/shells/batch_ensemble_$batch_ensemble\_$avg.sh
 echo "python -u ensemble_selection_baselines.py --split cifar10 --model $5 --dataset cifar10 --input_channels 3 --num_classes 10 --party_num 100 --label_distribution --K 10 --batch $batch --avg $avg --batch_ensemble $batch_ensemble --selection_method $selection_method --normalization $normalization --last_layer $last_layer --device $device --dr_method $dr_method >> exp_results/logs/batch_$batch_ensemble.log 2>> exp_results/logs/batch_$batch_ensemble.log" >> ../exp_results/shells/batch_ensemble_$batch_ensemble\_$avg.sh

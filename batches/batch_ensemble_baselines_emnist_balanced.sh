@@ -4,7 +4,7 @@ normalization=1
 selection_method="mixed"
 last_layer=0
 dr_method='[\"noDimensionReduction\",0.3]'
-rm -f exp_results/shells/batch_ensemble_$batch_ensemble\_baselines.sh
+rm -f ../exp_results/shells/batch_ensemble_$batch_ensemble\_baselines.sh
 echo "cd ../../" >> ../exp_results/shells/batch_ensemble_$batch_ensemble\_remaining.sh
 # For data generation
 echo "python -u ensemble_selection_baselines.py --dataset emnist --split balanced --party_num 100 --K 10 --batch $batch --batch_ensemble $batch_ensemble --selection_method $selection_method --normalization $normalization --last_layer $last_layer --dr_method $dr_method >> exp_results/logs/batch_$batch_ensemble.log 2>> exp_results/logs/batch_$batch_ensemble.log &" >> ../exp_results/shells/batch_ensemble_$batch_ensemble\_baselines.sh

@@ -15,7 +15,7 @@ num_classes=100
 
 echo "Clustering", $batch, $batch_ensemble, $dr, $model, $label_distribution, $selection_method, $last_layer, $layer, $name, $normalization, $avg, $input_channels, $num_classes
 
-rm -f exp_results/shells/batch_ensemble_$batch_ensemble\_$name.sh
+rm -f ../exp_results/shells/batch_ensemble_$batch_ensemble\_$name.sh
 
 # For data generation
 echo "python -u ensemble_selection_clustering.py --split cifar100 --model $model --dataset cifar100 --input_channels $input_channels --num_classes $num_classes --avg $avg --layer $layer --party_num 5 --label_distribution $label_distribution --K 2 --batch $batch --batch_ensemble $batch_ensemble --selection_method $selection_method --normalization $normalization --last_layer $last_layer --dr_method $dr_method >> exp_results/logs/batch_$batch_ensemble.log 2>> exp_results/logs/batch_$batch_ensemble.log" >> ../exp_results/shells/batch_ensemble_$batch_ensemble\_$name.sh
