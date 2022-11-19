@@ -27,8 +27,9 @@ if __name__ == '__main__':
     from config import exp_config
     from commandline_config import Config
     config = Config(exp_config)
-    config.model = "densenet"
+    config.model = "dla"
     model = get_model(config)
     print(config)
     for key in model.state_dict().keys():
         print(key)
+    print(model.state_dict().keys())
