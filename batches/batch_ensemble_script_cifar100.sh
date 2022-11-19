@@ -21,9 +21,9 @@ bash batch_ensemble_avg_cifar100.sh $batch $batch_ensemble mean_avg $device $mod
 # label_distribution last_layer
 bash batch_ensemble_clustering_cifar100.sh $batch $batch_ensemble noDimensionReduction $model 1 $selection_method 1 0 "last_layer_label_distribution"
 # PCA
-bash batch_ensemble_clustering_cifar100.sh $batch $batch_ensemble PCA $model 0 $selection_method 1 0 $normalization $avg $input_channels $num_classes "PCA"
+bash batch_ensemble_clustering_cifar100.sh $batch $batch_ensemble PCA $model 0 $selection_method 1 0 $normalization "PCA"
 # Kernel_PCA
-bash batch_ensemble_clustering_cifar100.sh $batch $batch_ensemble Kernel_PCA $model 0 $selection_method 1 0 $normalization $avg $input_channels $num_classes "Kernel_PCA"
+bash batch_ensemble_clustering_cifar100.sh $batch $batch_ensemble Kernel_PCA $model 0 $selection_method 1 0 $normalization "Kernel_PCA"
 # layer 1
 bash batch_ensemble_clustering_cifar100.sh $batch $batch_ensemble noDimensionReduction $model 0 $selection_method 0 1 "layer_1"
 # layer 2
