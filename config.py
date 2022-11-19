@@ -3,27 +3,27 @@ import sys
 from prettytable import PrettyTable
 
 exp_config = {
-    "batch": 2,  # which batch of experiment
-    "batch_ensemble":8, # which batch of the final written results
+    "batch": 221,  # which batch of experiment
+    "batch_ensemble":221, # which batch of the final written results
     "selection_method":"mixed", # how to select the model inside a cluster, data, CV or mixed
     "indexes": [],  # 方法会自动修改
     "partition": "",
     "partitions" : ["iid-diff-quantity", "homo", "noniid-labeldir", "-1"],
-    "split": "digits",
-    "dataset": "emnist",
-    "device":"cpu",
-    "party_num": 100,
-    "model":"SpinalNet",
-    "K": 10,  # 选几个cilents
+    "split": "cifar100",
+    "dataset": "cifar100",
+    "device":"cuda:0",
+    "party_num": 5,
+    "model":"resnet50",
+    "K": 2,  # 选几个cilents
     "cluster_method": "",  # 聚类方法
     "last_layer":True, # whether only read the last layer's parameter to do the clustering
     "layer": 0, # which layer to do the clustering, 0 means all layers
     "dr_method":["noDimensionReduction", 0.3], # Dimension Reduction Method, [noDimensionReduction/PCA/Kernel_PCA, 0.3 (What percentage of dimensions do we want to keep) ]
     "normalization":1, # if maxmin normalization for the model parameters
-    "avg":"fed_avg", # what kind of avergaing method will we use: mean_avg or fed_avg or none (don't use model averging)
+    "avg":"none", # what kind of avergaing method will we use: mean_avg or fed_avg or none (don't use model averging)
     "label_distribution":False, # whether calculate label distribution oracle, True or False
-    "input_channels":1,
-    "num_classes":62,
+    "input_channels":3,
+    "num_classes":100,
     "additional_parameters":[] # additional parameters for the code
 }
 

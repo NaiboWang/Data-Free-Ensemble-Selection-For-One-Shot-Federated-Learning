@@ -1,195 +1,27 @@
-python test.py --dataset cifar10 --model densenet --index 7 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 8 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 9 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 10 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 11 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 12 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 13 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 14 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 15 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 16 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 17 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 18 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 19 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 20 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 21 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 22 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 24 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 25 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 26 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 27 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 28 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 29 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 30 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 31 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 32 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 33 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 34 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 35 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 36 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 37 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 38 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 39 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 40 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 41 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 42 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 43 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 44 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 45 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 46 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 47 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 48 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 49 --partition homo --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test_oracle.py --dataset cifar10 --model densenet --index -1 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 0 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 1 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 2 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 3 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 4 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 5 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 6 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 7 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 8 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 9 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 10 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 11 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 12 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 13 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 14 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 15 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 16 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 17 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 18 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 19 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 20 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 21 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 22 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 23 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 24 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 25 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 26 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 27 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 28 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 29 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 30 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 31 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 32 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 33 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 34 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 35 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 36 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 37 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 38 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 39 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 40 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 41 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 42 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 43 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 44 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 45 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 46 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 47 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 48 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 49 --partition noniid-labeldir --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test_oracle.py --dataset cifar10 --model densenet --index -1 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 0 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 1 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 2 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 3 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 4 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 5 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 6 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 7 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 8 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 9 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 10 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 11 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 12 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 13 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 14 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 15 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 16 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 17 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 18 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 19 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 20 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 21 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 22 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 23 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 24 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 25 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 26 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 27 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 28 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 29 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 30 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 31 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 32 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 33 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 34 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 35 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 36 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 37 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 38 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 39 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 40 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 41 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 42 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 43 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 44 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 45 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 46 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 47 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 48 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 49 --partition iid-diff-quantity --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test_oracle.py --dataset cifar10 --model densenet --index -1 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 0 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 1 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 2 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 3 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 4 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 5 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 6 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 7 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 8 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 9 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 10 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 11 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 12 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 13 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 14 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 15 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 16 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 17 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 18 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 19 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 20 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 21 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 22 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 23 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 24 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 25 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 26 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 27 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 28 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 29 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 30 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 31 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 32 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 33 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 34 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 35 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 36 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 37 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 38 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 39 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 40 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 41 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 42 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 43 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 44 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 45 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 46 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 47 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 48 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
-python test.py --dataset cifar10 --model densenet --index 49 --partition noniid-#label4 --party_num 50 --split cifar10 --batch 12 --device cuda:2 --input_channels 3 --num_classes 10
+python train_model.py --index -1 --partition noniid-labeldir --party_num 5 --split cifar100 --device cuda:0 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 3 --partition noniid-labeldir --party_num 5 --split cifar100 --device cuda:1 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 4 --partition noniid-labeldir --party_num 5 --split cifar100 --device cuda:2 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index -1 --partition noniid-labeldir --party_num 10 --split cifar100 --device cuda:3 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 4 --partition noniid-labeldir --party_num 10 --split cifar100 --device cuda:6 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+wait
+python train_model.py --index 5 --partition noniid-labeldir --party_num 10 --split cifar100 --device cuda:0 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 6 --partition noniid-labeldir --party_num 10 --split cifar100 --device cuda:1 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 7 --partition noniid-labeldir --party_num 10 --split cifar100 --device cuda:2 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 8 --partition noniid-labeldir --party_num 10 --split cifar100 --device cuda:3 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 9 --partition noniid-labeldir --party_num 10 --split cifar100 --device cuda:6 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+wait
+python train_model.py --index -1 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:0 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 8 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:1 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 9 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:2 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 10 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:3 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 11 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:6 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+wait
+python train_model.py --index 12 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:0 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 13 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:1 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 14 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:2 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 15 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:3 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 16 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:6 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+wait
+python train_model.py --index 17 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:0 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 18 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:1 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &
+python train_model.py --index 19 --partition noniid-labeldir --party_num 20 --split cifar100 --device cuda:2 --batch 221 --dataset cifar100 --model dla --input_channels 3 --num_classes 100 &

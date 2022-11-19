@@ -91,7 +91,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch', default=221, type=int, help='')
     parser.add_argument('--input_channels', default=3, type=int, help='')
     parser.add_argument('--num_classes', default=100, type=int, help='')
-    parser.add_argument('--save', default=0, type=int, help='if save the test result')
+    parser.add_argument('--save', default=1, type=int, help='if save the test result')
     parser.add_argument('--model', default="resnet50", type=str, help='model name')
     args = parser.parse_args()
     print("Args", args)
@@ -103,7 +103,7 @@ if __name__ == '__main__':
 
     model = get_model(args)
 
-    model.load_state_dict(torch.load(model_path))
+    model.load_state_dict(torch.load(model_path, map_location=device)) # need to specific GPU device otherwise will cause error if one of the GPUs is full
     model = model.to(device)
     model.eval()
 
@@ -130,6 +130,8 @@ if __name__ == '__main__':
 
     test_features, test_targets = get_whole_test_set(-1, args.partition, args.party_num, args.dataset, args.split, args.batch)
     test_features, test_targets = convert_dataset(args, test_features, test_targets)
+    if args.index == -1:
+        test_feature, test_target = test_features, test_targets
 
     # Test the model
     print("Test begin")

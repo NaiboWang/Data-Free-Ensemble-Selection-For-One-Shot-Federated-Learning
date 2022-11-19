@@ -45,10 +45,10 @@ noniid-\#label45
 #[5,10,20]
 )
 # Modify this part every time
-party_num=200
-device="cuda:1"
-config=("${config_emnist_digits[@]}")
-model="SpinalNet"
+party_num=100
+device="cuda:14"
+config=("${config_emnist_letters[@]}")
+model="resnet50"
 
 batch=${config[0]}
 partition=(

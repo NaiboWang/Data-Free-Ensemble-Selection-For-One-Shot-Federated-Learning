@@ -296,11 +296,11 @@ if __name__ == '__main__':
         qualifier += c.dr_method[0] + "_"
     if c.label_distribution:
         qualifier += "label_distribution_"
-    partitions = ["iid-diff-quantity", "homo", "noniid-labeldir", get_noniid_label_number_split_name(c.split)]
+    partitions = ["homo", "iid-diff-quantity", "noniid-labeldir", get_noniid_label_number_split_name(c.split)]
     if c.partitions[-1] == "-1":
         c.partitions = partitions
     # partitions = [get_noniid_label_number_split_name(c.split)]
-    hierarchical_cluster_methods = ["single", "centroid", 'average', 'complete', 'ward',]
+    hierarchical_cluster_methods = ["centroid", "single", 'average', 'complete', 'ward',]
     # hierarchical_cluster_methods = ['ward']
     for partition in c.partitions:
         c.partition = partition

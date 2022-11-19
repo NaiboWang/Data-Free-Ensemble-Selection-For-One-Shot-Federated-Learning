@@ -22,3 +22,6 @@ This step will help you to:
 
 You can use ./upload.cmd to upload the project to Github.
 Document wait to be updated.
+
+
+For each batch_ensemble, every different configuration will have different batch_ensemble id.

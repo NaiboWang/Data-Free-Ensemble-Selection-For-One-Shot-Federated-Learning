@@ -11,10 +11,12 @@ Sub generate_pivotTable(sheetname, SEMR)
 '
 
 '
+    Worksheets(sheetname).Activate
+    num_columns = ActiveSheet.UsedRange.Columns.Count
 
     Sheets.Add
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
-        sheetname & "!R1C1:R1048576C13", Version:=8).CreatePivotTable _
+        sheetname & "!R1C1:R1048576C" & num_columns, Version:=8).CreatePivotTable _
         TableDestination:="Sheet1!R3C1", TableName:="PivotTable1", DefaultVersion _
         :=8
     Sheets("Sheet1").Select
@@ -55,25 +57,29 @@ Sub generate_pivotTable(sheetname, SEMR)
         .MissingItemsLimit = xlMissingItemsDefault
     End With
     ActiveSheet.PivotTables("PivotTable1").RepeatAllLabels xlRepeatLabels
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields("model")
+        .Orientation = xlRowField
+        .Position = 1
+    End With
     With ActiveSheet.PivotTables("PivotTable1").PivotFields("method")
-        .Orientation = xlRowField
-        .Position = 1
-    End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields("partition")
-        .Orientation = xlRowField
-        .Position = 1
-    End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields("split")
         .Orientation = xlRowField
         .Position = 2
     End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields("party_num")
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields("partition")
         .Orientation = xlRowField
         .Position = 3
     End With
-    With ActiveSheet.PivotTables("PivotTable1").PivotFields("K")
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields("split")
         .Orientation = xlRowField
         .Position = 4
+    End With
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields("party_num")
+        .Orientation = xlRowField
+        .Position = 5
+    End With
+    With ActiveSheet.PivotTables("PivotTable1").PivotFields("K")
+        .Orientation = xlRowField
+        .Position = 6
     End With
     ActiveSheet.PivotTables("PivotTable1").AddDataField ActiveSheet.PivotTables( _
         "PivotTable1").PivotFields("average_accuracy"), "Max of average_accuracy", _
@@ -1479,10 +1485,12 @@ End Sub
 
 Sub generate_f1_table(sheetname, SEMR)
 'F1-Score Table
+    Worksheets(sheetname).Activate
+    num_columns = ActiveSheet.UsedRange.Columns.Count
 
-     Sheets.Add
+    Sheets.Add
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
-        sheetname & "!R1C1:R1048576C13", Version:=8).CreatePivotTable _
+        sheetname & "!R1C1:R1048576C" & num_columns, Version:=8).CreatePivotTable _
         TableDestination:="Sheet2!R3C1", TableName:="PivotTable2", DefaultVersion _
         :=8
     Sheets("Sheet2").Select
@@ -1523,25 +1531,29 @@ Sub generate_f1_table(sheetname, SEMR)
         .MissingItemsLimit = xlMissingItemsDefault
     End With
     ActiveSheet.PivotTables("PivotTable2").RepeatAllLabels xlRepeatLabels
+    With ActiveSheet.PivotTables("PivotTable2").PivotFields("model")
+        .Orientation = xlRowField
+        .Position = 1
+    End With
     With ActiveSheet.PivotTables("PivotTable2").PivotFields("method")
-        .Orientation = xlRowField
-        .Position = 1
-    End With
-    With ActiveSheet.PivotTables("PivotTable2").PivotFields("partition")
-        .Orientation = xlRowField
-        .Position = 1
-    End With
-    With ActiveSheet.PivotTables("PivotTable2").PivotFields("split")
         .Orientation = xlRowField
         .Position = 2
     End With
-    With ActiveSheet.PivotTables("PivotTable2").PivotFields("party_num")
+    With ActiveSheet.PivotTables("PivotTable2").PivotFields("partition")
         .Orientation = xlRowField
         .Position = 3
     End With
-    With ActiveSheet.PivotTables("PivotTable2").PivotFields("K")
+    With ActiveSheet.PivotTables("PivotTable2").PivotFields("split")
         .Orientation = xlRowField
         .Position = 4
+    End With
+    With ActiveSheet.PivotTables("PivotTable2").PivotFields("party_num")
+        .Orientation = xlRowField
+        .Position = 5
+    End With
+    With ActiveSheet.PivotTables("PivotTable2").PivotFields("K")
+        .Orientation = xlRowField
+        .Position = 6
     End With
     ActiveSheet.PivotTables("PivotTable2").AddDataField ActiveSheet.PivotTables( _
         "PivotTable2").PivotFields("average_fscore"), "Max of average_fscore", _
@@ -2945,3 +2957,5 @@ Public Function getSheetName() As String
 
      getSheetName = ActiveWindow.ActiveSheet.Name
 End Function
+
+

@@ -46,10 +46,10 @@ noniid-\#label45
 )
 
 # Modify this part every time
-party_num=200
-device="cuda:1"
-config=("${config_emnist_digits[@]}")
-model="SpinalNet"
+party_num=20
+device="cuda:5"
+config=("${config_cifar100[@]}")
+model="dla"
 
 batch=${config[0]}
 partition=(

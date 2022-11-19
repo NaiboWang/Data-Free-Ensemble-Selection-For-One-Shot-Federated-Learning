@@ -10,13 +10,29 @@ import numpy as np
 import pymongo
 from sklearn.metrics import classification_report
 
-from commom_tools import max_voting
 from dbconfig import get_path
 from dbconfig import ensemble_selection_results
 from test_model import convert_report_to_json, generate_timestamp
 from commandline_config import Config
 
 DATASET_DIR, MODEL_DIR = get_path()
+def max_voting(result_list, weights=None):
+    if weights is None:
+        weights = [1 for s in result_list]
+    result_dict = dict()
+    for i in range(len(weights)):
+        weight = weights[i]
+        outcome = result_list[i]
+        if outcome in result_dict:
+            result_dict[outcome] += weight
+        else:
+            result_dict[outcome] = weight
+    # print(result_dict)
+    max_value = max(result_dict.values())
+    for key, value in result_dict.items():
+        if value == max_value:
+            return key
+
 def main(config=None):
     if config == None:
         config = {
@@ -75,6 +91,7 @@ def main(config=None):
     with open(output_test_accuracy_file, "w") as f:
         output_info = {
             "timestamp":ts,
+            "model":c.model,
             "parties": c.indexes,
             "ensemble": 1,
             "ID": str(c.indexes),

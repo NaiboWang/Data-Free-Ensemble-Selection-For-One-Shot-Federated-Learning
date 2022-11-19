@@ -24,31 +24,14 @@ from test_model import generate_timestamp, get_whole_test_set, convert_report_to
 
 DATASET_DIR, MODEL_DIR = get_path()
 
-def max_voting(result_list, weights=None):
-    if weights is None:
-        weights = [1 for s in result_list]
-    result_dict = dict()
-    for i in range(len(weights)):
-        weight = weights[i]
-        outcome = result_list[i]
-        if outcome in result_dict:
-            result_dict[outcome] += weight
-        else:
-            result_dict[outcome] = weight
-    # print(result_dict)
-    max_value = max(result_dict.values())
-    for key, value in result_dict.items():
-        if value == max_value:
-            return key
-
-
 def repeat(selection_method=None, repeat_times=50, config=None, qualifier=""):
     start_time = time.time()
     average_accuracy = 0.0
     average_fscore = 0.0
     reports = []
-    for i in range(repeat_times):  # repeat 10 times
+    for i in range(repeat_times):  # repeat repeat_times times
         indexes, funcName, additional_information = selection_method(config)
+        print("indexes", indexes)
         config["indexes"] = indexes
         if config.avg == "none": # if not conduct model averaging:
             report = main(config)
@@ -91,7 +74,7 @@ def read_distribution(config):
             party_num) + "_b" + str(config.batch) + ".pkl",
         'rb')
     data = pickle.load(pkl_file)
-    num_labels = get_label_numbers(config.split)
+    num_labels = config.num_classes
     # t = []
     # for i in range(num_labels):
     #     t.append(i)
@@ -174,10 +157,10 @@ def read_parameters(config, flatten = True):
                             weight = all_weights[index][1][key].cpu().numpy().flatten()
                             weights.extend(weight)
                     else:
-                        if config.layer == 0:
+                        if config.layer == 0: # all layers
                             weight = all_weights[index][1][key].cpu().numpy().flatten()
                             weights.extend(weight)
-                        elif config.layer == -1:
+                        elif config.layer == -1: # random layers
                             if key in random_keys:
                                 weight = all_weights[index][1][key].cpu().numpy().flatten()
                                 weights.extend(weight)
@@ -318,34 +301,38 @@ def model_averging(config):
     model.eval()
     batch_size_test = 10
 
-    test_features, test_targets = get_whole_test_set(-1, config.partition, config.party_num, config.dataset, config.split, config.batch)
-    test_features = torch.Tensor(test_features)
-    test_targets = torch.Tensor(test_targets)
-    with torch.no_grad():
-        # Test validation accuracy
-        correct2 = 0
-        total2 = 0
+    # test_features, test_targets = get_whole_test_set(-1, config.partition, config.party_num, config.dataset, config.split, config.batch)
+    # test_features = torch.Tensor(test_features)
+    # test_targets = torch.Tensor(test_targets)
+    from train_model import test_on_dataset, convert_dataset, get_dataset_shape
+    test_whole_feature, test_whole_target = get_whole_test_set(-1, config.partition, config.party_num, config.dataset,
+                  config.split, config.batch)
+    test_features, test_targets = convert_dataset(config, test_whole_feature, test_whole_target)
 
-        # Test who;e test accuracy
-        correct2 = 0
-        total2 = 0
+    with torch.no_grad():
+        correct = 0
+        total = 0
         results = [[], []]
 
         for i in range(math.ceil(len(test_features) / batch_size_test)):
             begin = i * batch_size_test
             end = (i + 1) * batch_size_test
             reshape_size = min(batch_size_test, len(test_features[begin:end]))
-            images = test_features[begin:end].reshape(reshape_size, 1, test_features.shape[1],test_features.shape[2]).type(torch.FloatTensor).to(config.device)
+            shape = get_dataset_shape(config.dataset)
+            if config.device == "cpu":
+                raise EnvironmentError("CPU is not supported, please change to GPU!")
+            images = test_features[begin:end].reshape(reshape_size, shape[0], shape[1], shape[2]).type(
+                torch.FloatTensor).to(config.device)
             labels = test_targets[begin:end].to(config.device)
 
             outputs = model(images)
             _, predicted = torch.max(outputs.data, 1)
-            total2 += labels.size(0)
-            correct2 += (predicted == labels).sum().item()
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
             results[0].extend(predicted.cpu().numpy().tolist())
             results[1].extend(labels.cpu().numpy().tolist())
-        # print(correct2,total2, len(results[0]),len(results[1]))
-        whole_test_accuracy = correct2 / total2
+        # print(correct,total, len(results[0]),len(results[1]))
+        whole_test_accuracy = correct / total
         print("Whole test accuracy:", whole_test_accuracy)
         report = convert_report_to_json(
             classification_report(np.asarray(results)[1, :], np.asarray(results)[0, :], output_dict=True))

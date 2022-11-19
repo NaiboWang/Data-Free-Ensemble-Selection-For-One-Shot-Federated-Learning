@@ -28,10 +28,11 @@ def CV_selection(config):
          "parties": {"$size": 1  # Find the test results in the combination contains only one model
                      }}))  # 查找原始测试数据集的测试结果
     assert len(test_results) == party_num + 1
-    for index in range(party_num):
+    for index in range(len(test_results)):
         local_validation_accuracy = test_results[index]["local_validation_accuracy"]
         party = int(test_results[index]["parties"][0])
-        party_local_validation_accuracies.append((party, local_validation_accuracy))
+        if party != -1: # skip -1 which is the oracle
+            party_local_validation_accuracies.append((party, local_validation_accuracy))
     # 按照元组第二个键降序排序
     party_local_validation_accuracies = sorted(party_local_validation_accuracies,
                                                key=lambda party_acc: party_acc[1], reverse=True)
@@ -45,7 +46,6 @@ def CV_selection(config):
     # funcName = sys._getframe().f_back.f_code.co_name # 被调用函数名
     funcName = sys._getframe().f_code.co_name  # 当前函数名
     return indexes, funcName, party_local_validation_accuracies
-
 
 def data_selection(config):
     K = config["K"]
@@ -127,6 +127,8 @@ if __name__ == '__main__':
     c = Config(exp_config)
     ALL = False # Iterate all situations
     if ALL:
+        if c.K >10:
+            raise OSError("K is too large")
         all_situations = get_all_situations(c.party_num)
         print(all_situations)
         selections = []
@@ -139,7 +141,7 @@ if __name__ == '__main__':
                 if j == "1":
                     selection.append(k)
                 k += 1
-            if len(selection) > 1:
+            if len(selection) > 0:
                 selections.append(selection)
         print(len(selections), selections)  # 生成所有的情况
     partitions = ["noniid-labeldir", "homo", "iid-diff-quantity", get_noniid_label_number_split_name(c.split)]
@@ -151,6 +153,9 @@ if __name__ == '__main__':
     for partition in c.partitions:
         c.partition = partition
         print(c)
+        # all
+        repeat(all_selection, 1, config=c)
+
         # baseline 1
         repeat(CV_selection, 1, config=c)
 
@@ -163,14 +168,13 @@ if __name__ == '__main__':
         # oracle
         repeat(oracle, 1, config=c)
 
-        # all
-        repeat(all_selection, 1, config=c)
+
 
         # traverse
         if ALL:
             for i in range(len(selections)):
                 try:
                     c.additional_parameters = [selections, i]
-                    # repeat(traverse_selection, 1, config=c)
+                    repeat(traverse_selection, 1, config=c)
                 except OSError as e:
                     print(e)
