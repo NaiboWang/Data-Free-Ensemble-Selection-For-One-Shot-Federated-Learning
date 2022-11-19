@@ -46,10 +46,10 @@ noniid-\#label45
 )
 
 # Modify this part every time
-party_num=20
-device="cuda:5"
-config=("${config_cifar100[@]}")
-model="dla"
+party_num=5
+device="cuda:6"
+config=("${config_cifar10[@]}")
+model="resnet50"
 
 batch=${config[0]}
 partition=(

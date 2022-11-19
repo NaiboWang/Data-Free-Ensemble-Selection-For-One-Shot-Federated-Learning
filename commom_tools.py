@@ -131,8 +131,8 @@ def read_parameters(config, flatten = True):
             model.load_state_dict(torch.load(model_path,map_location=torch.device('cpu'))) # ensure models are loaded via cpu and main memory, not gpu cuda memory
             weights = model.state_dict()
             all_weights.append((index,copy.deepcopy(weights)))
-        for key in model.state_dict().keys():
-            print(key)
+        # for key in model.state_dict().keys():
+        #     print(key)
         if flatten:
             # 第一种方式，把所有的权值展平成一层，形成一个mXn的二维矩阵，m是party number，n是单个模型所有的节点数量，即纬度数
             all_keys = all_weights[0][1].keys()
@@ -169,11 +169,10 @@ def read_parameters(config, flatten = True):
                                 layer_name = [['l1.0.weight', 'l1.0.bias', 'l1.1.weight', 'l1.1.bias', 'l1.1.running_mean', 'l1.1.running_var', 'l1.1.num_batches_tracked', 'l1.3.weight', 'l1.3.bias', 'l1.4.weight', 'l1.4.bias', 'l1.4.running_mean', 'l1.4.running_var', 'l1.4.num_batches_tracked'],['fc_spinal_layer1.1.weight', 'fc_spinal_layer1.1.bias', 'fc_spinal_layer1.2.weight', 'fc_spinal_layer1.2.bias', 'fc_spinal_layer1.2.running_mean', 'fc_spinal_layer1.2.running_var', 'fc_spinal_layer1.2.num_batches_tracked'],['fc_spinal_layer4.1.weight', 'fc_spinal_layer4.1.bias', 'fc_spinal_layer4.2.weight', 'fc_spinal_layer4.2.bias', 'fc_spinal_layer4.2.running_mean', 'fc_spinal_layer4.2.running_var', 'fc_spinal_layer4.2.num_batches_tracked']]
                             elif config.model == "densenet":
                                 layer_name = [['conv1.weight', 'dense1.0.bn1.weight', 'dense1.0.bn1.bias', 'dense1.0.bn1.running_mean', 'dense1.0.bn1.running_var', 'dense1.0.bn1.num_batches_tracked', 'dense1.0.conv1.weight', 'dense1.0.bn2.weight', 'dense1.0.bn2.bias', 'dense1.0.bn2.running_mean', 'dense1.0.bn2.running_var', 'dense1.0.bn2.num_batches_tracked', 'dense1.0.conv2.weight'],['dense2.8.bn1.weight', 'dense2.8.bn1.bias', 'dense2.8.bn1.running_mean', 'dense2.8.bn1.running_var', 'dense2.8.bn1.num_batches_tracked', 'dense2.8.conv1.weight', 'dense2.8.bn2.weight', 'dense2.8.bn2.bias', 'dense2.8.bn2.running_mean', 'dense2.8.bn2.running_var', 'dense2.8.bn2.num_batches_tracked', 'dense2.8.conv2.weight'], ['dense4.13.bn1.weight', 'dense4.13.bn1.bias', 'dense4.13.bn1.running_mean', 'dense4.13.bn1.running_var', 'dense4.13.bn1.num_batches_tracked', 'dense4.13.conv1.weight', 'dense4.13.bn2.weight', 'dense4.13.bn2.bias', 'dense4.13.bn2.running_mean', 'dense4.13.bn2.running_var', 'dense4.13.bn2.num_batches_tracked', 'dense4.13.conv2.weight']]
-                            elif config.model == "resnet":
+                            elif config.model == "resnet50":
                                 layer_name = [['conv1.weight', 'bn1.weight', 'bn1.bias', 'bn1.running_mean', 'bn1.running_var', 'bn1.num_batches_tracked', 'layer1.0.conv1.weight', 'layer1.0.bn1.weight', 'layer1.0.bn1.bias', 'layer1.0.bn1.running_mean', 'layer1.0.bn1.running_var', 'layer1.0.bn1.num_batches_tracked', 'layer1.0.conv2.weight', 'layer1.0.bn2.weight', 'layer1.0.bn2.bias', 'layer1.0.bn2.running_mean', 'layer1.0.bn2.running_var', 'layer1.0.bn2.num_batches_tracked', 'layer1.0.conv3.weight', 'layer1.0.bn3.weight', 'layer1.0.bn3.bias', 'layer1.0.bn3.running_mean', 'layer1.0.bn3.running_var', 'layer1.0.bn3.num_batches_tracked', 'layer1.0.shortcut.0.weight', 'layer1.0.shortcut.1.weight', 'layer1.0.shortcut.1.bias', 'layer1.0.shortcut.1.running_mean', 'layer1.0.shortcut.1.running_var', 'layer1.0.shortcut.1.num_batches_tracked'],['layer3.0.conv1.weight', 'layer3.0.bn1.weight', 'layer3.0.bn1.bias', 'layer3.0.bn1.running_mean', 'layer3.0.bn1.running_var', 'layer3.0.bn1.num_batches_tracked', 'layer3.0.conv2.weight', 'layer3.0.bn2.weight', 'layer3.0.bn2.bias', 'layer3.0.bn2.running_mean', 'layer3.0.bn2.running_var', 'layer3.0.bn2.num_batches_tracked', 'layer3.0.conv3.weight', 'layer3.0.bn3.weight', 'layer3.0.bn3.bias', 'layer3.0.bn3.running_mean', 'layer3.0.bn3.running_var', 'layer3.0.bn3.num_batches_tracked', 'layer3.0.shortcut.0.weight', 'layer3.0.shortcut.1.weight', 'layer3.0.shortcut.1.bias', 'layer3.0.shortcut.1.running_mean', 'layer3.0.shortcut.1.running_var', 'layer3.0.shortcut.1.num_batches_tracked'], ['layer4.2.conv1.weight', 'layer4.2.bn1.weight', 'layer4.2.bn1.bias', 'layer4.2.bn1.running_mean', 'layer4.2.bn1.running_var', 'layer4.2.bn1.num_batches_tracked', 'layer4.2.conv2.weight', 'layer4.2.bn2.weight', 'layer4.2.bn2.bias', 'layer4.2.bn2.running_mean', 'layer4.2.bn2.running_var', 'layer4.2.bn2.num_batches_tracked', 'layer4.2.conv3.weight', 'layer4.2.bn3.weight', 'layer4.2.bn3.bias', 'layer4.2.bn3.running_mean', 'layer4.2.bn3.running_var', 'layer4.2.bn3.num_batches_tracked']]
                             elif config.model == "dla":
                                 layer_name = [['base.0.weight', 'base.1.weight', 'base.1.bias', 'base.1.running_mean', 'base.1.running_var', 'base.1.num_batches_tracked', 'layer1.0.weight', 'layer1.1.weight', 'layer1.1.bias', 'layer1.1.running_mean', 'layer1.1.running_var', 'layer1.1.num_batches_tracked', 'layer2.0.weight', 'layer2.1.weight', 'layer2.1.bias', 'layer2.1.running_mean', 'layer2.1.running_var', 'layer2.1.num_batches_tracked'],['layer5.root.conv.weight', 'layer5.root.bn.weight', 'layer5.root.bn.bias', 'layer5.root.bn.running_mean', 'layer5.root.bn.running_var', 'layer5.root.bn.num_batches_tracked', 'layer5.level_1.root.conv.weight', 'layer5.level_1.root.bn.weight', 'layer5.level_1.root.bn.bias', 'layer5.level_1.root.bn.running_mean', 'layer5.level_1.root.bn.running_var', 'layer5.level_1.root.bn.num_batches_tracked', 'layer5.level_1.left_node.conv1.weight', 'layer5.level_1.left_node.bn1.weight', 'layer5.level_1.left_node.bn1.bias', 'layer5.level_1.left_node.bn1.running_mean', 'layer5.level_1.left_node.bn1.running_var', 'layer5.level_1.left_node.bn1.num_batches_tracked', 'layer5.level_1.left_node.conv2.weight', 'layer5.level_1.left_node.bn2.weight', 'layer5.level_1.left_node.bn2.bias', 'layer5.level_1.left_node.bn2.running_mean', 'layer5.level_1.left_node.bn2.running_var', 'layer5.level_1.left_node.bn2.num_batches_tracked', 'layer5.level_1.left_node.shortcut.0.weight', 'layer5.level_1.left_node.shortcut.1.weight', 'layer5.level_1.left_node.shortcut.1.bias', 'layer5.level_1.left_node.shortcut.1.running_mean', 'layer5.level_1.left_node.shortcut.1.running_var', 'layer5.level_1.left_node.shortcut.1.num_batches_tracked', 'layer5.level_1.right_node.conv1.weight', 'layer5.level_1.right_node.bn1.weight', 'layer5.level_1.right_node.bn1.bias', 'layer5.level_1.right_node.bn1.running_mean', 'layer5.level_1.right_node.bn1.running_var', 'layer5.level_1.right_node.bn1.num_batches_tracked', 'layer5.level_1.right_node.conv2.weight', 'layer5.level_1.right_node.bn2.weight', 'layer5.level_1.right_node.bn2.bias', 'layer5.level_1.right_node.bn2.running_mean', 'layer5.level_1.right_node.bn2.running_var', 'layer5.level_1.right_node.bn2.num_batches_tracked'], ['layer6.root.bn.bias', 'layer6.root.bn.running_mean', 'layer6.root.bn.running_var', 'layer6.root.bn.num_batches_tracked', 'layer6.left_node.conv1.weight', 'layer6.left_node.bn1.weight', 'layer6.left_node.bn1.bias', 'layer6.left_node.bn1.running_mean', 'layer6.left_node.bn1.running_var', 'layer6.left_node.bn1.num_batches_tracked', 'layer6.left_node.conv2.weight', 'layer6.left_node.bn2.weight', 'layer6.left_node.bn2.bias', 'layer6.left_node.bn2.running_mean', 'layer6.left_node.bn2.running_var', 'layer6.left_node.bn2.num_batches_tracked', 'layer6.left_node.shortcut.0.weight', 'layer6.left_node.shortcut.1.weight', 'layer6.left_node.shortcut.1.bias', 'layer6.left_node.shortcut.1.running_mean', 'layer6.left_node.shortcut.1.running_var', 'layer6.left_node.shortcut.1.num_batches_tracked', 'layer6.right_node.conv1.weight', 'layer6.right_node.bn1.weight', 'layer6.right_node.bn1.bias', 'layer6.right_node.bn1.running_mean', 'layer6.right_node.bn1.running_var', 'layer6.right_node.bn1.num_batches_tracked', 'layer6.right_node.conv2.weight', 'layer6.right_node.bn2.weight', 'layer6.right_node.bn2.bias', 'layer6.right_node.bn2.running_mean', 'layer6.right_node.bn2.running_var', 'layer6.right_node.bn2.num_batches_tracked']]
-
                             if key in layer_name[config.layer-1]:
                                 weight = all_weights[index][1][key].cpu().numpy().flatten()
                                 weights.extend(weight)
@@ -265,6 +264,22 @@ def model_averging(config):
     Returns:
          the average of the weights.
     """
+    if config.indexes == [-1]:
+        return {
+            "accuracy": -1,
+            "macro avg": {
+                "precision": -1,
+                "recall": -1,
+                "f1-score": -1,
+                "support": -1
+            },
+            "weighted avg": {
+                "precision": -1,
+                "recall": -1,
+                "f1-score": -1,
+                "support": -1
+            }
+        } # skip oracle model averaging
     all_weights = read_parameters(config, flatten=False)
     w = []
     party_dataset_amount = get_dataset_amount(config)
