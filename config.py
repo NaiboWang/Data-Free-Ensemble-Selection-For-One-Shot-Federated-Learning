@@ -3,17 +3,17 @@ import sys
 from prettytable import PrettyTable
 
 exp_config = {
-    "batch": 221,  # which batch of experiment
-    "batch_ensemble":221, # which batch of the final written results
+    "batch": 201,  # which batch of experiment
+    "batch_ensemble":20100, # which batch of the final written results
     "selection_method":"mixed", # how to select the model inside a cluster, data, CV or mixed
     "indexes": [],  # 方法会自动修改
     "partition": "",
     "partitions" : ["iid-diff-quantity", "homo", "noniid-labeldir", "-1"],
-    "split": "cifar100",
-    "dataset": "cifar100",
+    "split": "balanced",
+    "dataset": "emnist",
     "device":"cuda:0",
-    "party_num": 5,
-    "model":"resnet50",
+    "party_num": 10,
+    "model":"SpinalNet",
     "K": 2,  # 选几个cilents
     "cluster_method": "",  # 聚类方法
     "last_layer":True, # whether only read the last layer's parameter to do the clustering
@@ -24,6 +24,7 @@ exp_config = {
     "label_distribution":False, # whether calculate label distribution oracle, True or False
     "input_channels":3,
     "num_classes":100,
+    "weights": "data_size", # weights for the clients, equal or data_size
     "additional_parameters":[] # additional parameters for the code
 }
 

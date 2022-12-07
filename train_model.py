@@ -12,7 +12,7 @@ import argparse
 
 from model_config import get_model
 from config import get_dataset_shape
-from dbconfig import get_path
+from dbconfig import *
 
 DATASET_DIR, MODEL_DIR = get_path()
 
@@ -110,16 +110,16 @@ if __name__ == '__main__':
     log_interval = 500
 
     parser = argparse.ArgumentParser(description='index')
-    parser.add_argument('--index', default=1, type=int, help='party index')
+    parser.add_argument('--index', default=9, type=int, help='party index')
     parser.add_argument('--partition', default="iid-diff-quantity", type=str, help='partition methods')
-    parser.add_argument('--device', default="cuda:0", type=str, help='partition methods')
-    parser.add_argument('--dataset', default="cifar10", type=str, help='dataset name')
-    parser.add_argument('--split', default="cifar10", type=str)
-    parser.add_argument('--party_num', default=200, type=int)
-    parser.add_argument('--batch', default=211, type=int, help='')
-    parser.add_argument('--model', default="resnet50", type=str, help='model name')
-    parser.add_argument('--input_channels', default=3, type=int, help='')
-    parser.add_argument('--num_classes', default=10, type=int, help='')
+    parser.add_argument('--device', default="cuda:1", type=str, help='partition methods')
+    parser.add_argument('--dataset', default="emnist", type=str, help='dataset name')
+    parser.add_argument('--split', default="letters", type=str)
+    parser.add_argument('--party_num', default=10, type=int)
+    parser.add_argument('--batch', default=201, type=int, help='')
+    parser.add_argument('--model', default="SpinalNet", type=str, help='model name')
+    parser.add_argument('--input_channels', default=1, type=int, help='')
+    parser.add_argument('--num_classes', default=26, type=int, help='')
 
     args = parser.parse_args()
     device = args.device
@@ -158,12 +158,24 @@ if __name__ == '__main__':
     test_whole_feature, test_whole_target = get_whole_test_set(args.index, args.partition, args.party_num, args.dataset, args.split, args.batch)
     test_whole_feature, test_whole_target = convert_dataset(args, test_whole_feature, test_whole_target)
 
+    print("Training set", feature.shape, target.shape)
+    print("Validation set", validation_feature.shape, validation_target.shape)
+    print("Test set", test_feature.shape, test_target.shape)
+    print("Whole test set", test_whole_feature.shape, test_whole_target.shape)
+
     # Loss and optimizer
     criterion = nn.CrossEntropyLoss()
 
     # Train the model
     total_step = math.ceil(len(feature) / batch_size_train)
     best_accuracy = 0
+
+    train_info = train_config.find({"index": args.index, "partition": args.partition, "party_num": args.party_num, "dataset": args.dataset, "split": args.split, "batch": args.batch, "model": args.model})
+    if len(list(train_info)) == 0:
+        train_config.insert_one({"index": args.index, "partition": args.partition, "party_num": args.party_num, "dataset": args.dataset, "split": args.split, "batch": args.batch, "model":args.model, "train_accuracy": -1,  "validation_accuracy": -1, "test_accuracy": -1, "test_whole_accuracy": -1, "best_validation_accuracy":-1, "epoch": -1, "best_epoch": -1,"test_whole_accuracy_last_epoch": -1})
+    else:
+        train_config.update_one({"index": args.index, "partition": args.partition, "party_num": args.party_num, "dataset": args.dataset, "split": args.split, "batch": args.batch, "model": args.model}, {"$set": { "train_accuracy": -1,  "validation_accuracy": -1, "test_accuracy": -1, "test_whole_accuracy": -1, "best_validation_accuracy":-1, "epoch": -1, "best_epoch": -1, "test_whole_accuracy_last_epoch": -1}})
+
 
     for epoch in range(num_epochs):
         model.train()
@@ -192,11 +204,12 @@ if __name__ == '__main__':
                 print("Epoch [{}/{}], Step [{}/{}] Loss: {:.4f}"
                       .format(epoch + 1, num_epochs, i + 1, total_step, loss.item()))
 
+        train_config.update_one({"index": args.index, "partition": args.partition, "party_num": args.party_num, "dataset": args.dataset, "split": args.split, "batch": args.batch, "model": args.model}, {"$set": {"epoch": epoch}})
+
         # Test the model on validation set
         model.eval()
         with torch.no_grad():
-            test_on_dataset(args, feature, target, model, device, name="training")
-
+            train_accuracy = test_on_dataset(args, feature, target, model, device, name="training")
             validation_accuracy = test_on_dataset(args, validation_feature, validation_target, model, device, name="validation")
             if best_accuracy < validation_accuracy:
                 best_accuracy = validation_accuracy
@@ -208,11 +221,19 @@ if __name__ == '__main__':
                 model_path = save_dir + "/party_"+ str(args.index) + "_%d" % (
                     args.party_num) + ".pkl"
                 torch.save(model.state_dict(), model_path)
+                train_config.update_one({"index": args.index, "partition": args.partition, "party_num": args.party_num, "dataset": args.dataset, "split": args.split, "batch": args.batch, "model": args.model}, {"$set": {"best_epoch": best_epoch, "best_validation_accuracy": best_accuracy}})
 
-            test_on_dataset(args, test_feature, test_target, model, device, name="test")
+            test_accuracy = test_on_dataset(args, test_feature, test_target, model, device, name="test")
+            train_config.update_one({"index": args.index, "partition": args.partition, "party_num": args.party_num, "dataset": args.dataset, "split": args.split, "batch": args.batch, "model": args.model}, {"$set": {"train_accuracy": train_accuracy, "validation_accuracy": validation_accuracy, "test_accuracy": test_accuracy}})
             print(args)
         scheduler.step()
 
+    # Test the model on whole test set
+    model.eval()
+    with torch.no_grad():
+        test_whole_accuracy = test_on_dataset(args, test_whole_feature, test_whole_target, model, device, name="whole test")
+        train_config.update_one({"index": args.index, "partition": args.partition, "party_num": args.party_num, "dataset": args.dataset, "split": args.split, "batch": args.batch, "model": args.model}, {"$set": {"test_whole_accuracy_last_epoch": test_whole_accuracy}})
+        print(args)
     print("Test on local test set begin")
 
     model_final = get_model(args)
@@ -224,5 +245,6 @@ if __name__ == '__main__':
         print("Best epoch:", best_epoch)
         test_on_dataset(args, validation_feature, validation_target, model_final, device, name="validation")
         test_on_dataset(args, test_feature, test_target, model_final, device, name="test")
-        test_on_dataset(args, test_whole_feature, test_whole_target, model_final, device, name="test_whole")
+        whole_test_accuracy = test_on_dataset(args, test_whole_feature, test_whole_target, model_final, device, name="test_whole")
+        train_config.update_one({"index": args.index, "partition": args.partition, "party_num": args.party_num, "dataset": args.dataset, "split": args.split, "batch": args.batch, "model": args.model}, {"$set": {"test_whole_accuracy": whole_test_accuracy}})
         print(args)

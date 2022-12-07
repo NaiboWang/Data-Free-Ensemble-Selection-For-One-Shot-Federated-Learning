@@ -1464,7 +1464,7 @@ Sub generate_pivotTable(sheetname, SEMR)
     Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, _
         SkipBlanks:=False, Transpose:=False
     Application.CutCopyMode = False
-    Range("B5").Select
+    Range("B6").Select
     ActiveWindow.FreezePanes = True
     ActiveWindow.SmallScroll Down:=0
     Columns("A:PI").Select
@@ -2934,7 +2934,7 @@ Sub generate_f1_table(sheetname, SEMR)
     Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, _
         SkipBlanks:=False, Transpose:=False
     Application.CutCopyMode = False
-    Range("B5").Select
+    Range("B6").Select
     ActiveWindow.FreezePanes = True
     ActiveWindow.SmallScroll Down:=0
     Columns("A:PI").Select

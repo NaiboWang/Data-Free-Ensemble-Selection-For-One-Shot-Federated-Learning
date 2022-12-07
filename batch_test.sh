@@ -46,9 +46,9 @@ noniid-\#label45
 )
 
 # Modify this part every time
-party_num=5
-device="cuda:6"
-config=("${config_cifar10[@]}")
+party_num=100
+device="cuda:14"
+config=("${config_emnist_letters[@]}")
 model="resnet50"
 
 batch=${config[0]}

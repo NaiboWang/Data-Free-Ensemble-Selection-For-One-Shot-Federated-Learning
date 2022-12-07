@@ -101,9 +101,13 @@ if __name__ == '__main__':
     save_dir = MODEL_DIR + "models/" + meta_data
     model_path = save_dir + "/party_%d_%d.pkl" % (args.index, args.party_num)
 
-    model = get_model(args)
-
-    model.load_state_dict(torch.load(model_path, map_location=device)) # need to specific GPU device otherwise will cause error if one of the GPUs is full
+    try:
+        model = get_model(args)
+        model.load_state_dict(torch.load(model_path, map_location=device)) # need to specific GPU device otherwise will cause error if one of the GPUs is full
+    except:
+        print("Change model class number to 62")
+        model = get_model(args, 62)
+        model.load_state_dict(torch.load(model_path, map_location=device))
     model = model.to(device)
     model.eval()
 

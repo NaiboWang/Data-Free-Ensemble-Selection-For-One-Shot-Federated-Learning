@@ -42,18 +42,26 @@ bash batch_ensemble_clustering_cifar10.sh $batch $batch_ensemble noDimensionRedu
 # original
 bash batch_ensemble_clustering_cifar10.sh $batch $batch_ensemble noDimensionReduction $model 0 $selection_method 0 0 "original"
 
-cd ..
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_baselines.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_last_layer.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_last_layer_label_distribution.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_fed_avg.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_mean_avg.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_PCA.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_Kernel_PCA.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_layer_1.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_layer_2.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_layer_3.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_layer_-1.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_last_layer_CV.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_last_layer_data.sh
-bash exp_results/shells/batch_ensemble_$batch_ensemble\_original.sh
+if [ $5 -gt 0 ] # 第五个参数大于1才真的跑 为0只是生成脚本
+then
+  cd ..
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_baselines.sh
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_last_layer.sh
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_last_layer_label_distribution.sh
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_PCA.sh
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_Kernel_PCA.sh
+  if [ $5 -eq 2 ] # If the 5th command line if equal to 2 then run fed and mean avg
+  then
+    bash exp_results/shells/batch_ensemble_$batch_ensemble\_fed_avg.sh
+    bash exp_results/shells/batch_ensemble_$batch_ensemble\_mean_avg.sh
+  fi
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_PCA.sh
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_Kernel_PCA.sh
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_layer_1.sh
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_layer_2.sh
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_layer_3.sh
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_layer_-1.sh
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_last_layer_CV.sh
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_last_layer_data.sh
+  bash exp_results/shells/batch_ensemble_$batch_ensemble\_original.sh
+fi

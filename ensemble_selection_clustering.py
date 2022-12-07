@@ -12,7 +12,7 @@ from sklearn.cluster import SpectralClustering
 from config import get_noniid_label_number_split_name, exp_config
 from commandline_config import Config
 from sklearn.decomposition import PCA, KernelPCA
-from commom_tools import repeat, read_parameters, get_dataset_amount, convert_int, get_validation_accuracies, \
+from common_tools import repeat, read_parameters, get_dataset_amount, convert_int, get_validation_accuracies, \
     read_distribution
 from dbconfig import ensemble_selection_exp_results, ensemble_selection_results
 from ensemble import main
@@ -25,6 +25,7 @@ from sklearn.cluster import KMeans, DBSCAN
 
 all_weights = []
 flatten_weights = []
+flatten_indexes = []
 party_local_validation_accuracies = []
 party_dataset_amount = []
 
@@ -38,7 +39,8 @@ def get_indexes_by_CV(config, wheres):
         if len(where) > 0:  # 防止分不到K个类的情况
             partial_accuracies = []
             for j in range(len(where)):
-                index_t = where[j]
+                index_ts = where[j]
+                index_t = flatten_indexes[index_ts]
                 if index_t == party_local_validation_accuracies[index_t][0]:
                     partial_accuracies.append(party_local_validation_accuracies[index_t])
                 else:
@@ -61,7 +63,8 @@ def get_indexes_by_data(config, wheres):
         if len(where) > 0:  # 防止分不到K个类的情况
             partial_dataset_amounts = []
             for j in range(len(where)):
-                index_t = where[j]
+                index_ts = where[j]
+                index_t = flatten_indexes[index_ts]
                 if index_t == party_dataset_amount[index_t][0]:
                     partial_dataset_amounts.append(party_dataset_amount[index_t])
                 else:
@@ -86,7 +89,10 @@ def get_indexes_by_mixed(config, wheres, difference_threshold=2):
             partial_accuracies = []
             partial_dataset_amounts = []
             for j in range(len(where)):
-                index_t = where[j]
+                index_ts = where[j]
+                index_t = flatten_indexes[index_ts]
+                if index_t != index_ts:
+                    print("Index does not match:", index_ts, index_t)
                 if index_t == party_local_validation_accuracies[index_t][0]:
                     partial_accuracies.append(party_local_validation_accuracies[index_t])
                 else:
@@ -296,7 +302,7 @@ if __name__ == '__main__':
         qualifier += c.dr_method[0] + "_"
     if c.label_distribution:
         qualifier += "label_distribution_"
-    partitions = ["homo", "iid-diff-quantity", "noniid-labeldir", get_noniid_label_number_split_name(c.split)]
+    partitions = ["iid-diff-quantity", "homo", "noniid-labeldir", get_noniid_label_number_split_name(c.split)]
     if c.partitions[-1] == "-1":
         c.partitions = partitions
     # partitions = [get_noniid_label_number_split_name(c.split)]
@@ -306,9 +312,9 @@ if __name__ == '__main__':
         c.partition = partition
         print(c)
         if not c.label_distribution:
-            flatten_weights = read_parameters(c) # read model parameters
+            flatten_weights, flatten_indexes = read_parameters(c) # read model parameters
         else:
-            flatten_weights = read_distribution(c)
+            flatten_weights, flatten_indexes = read_distribution(c)
 
         if c.selection_method == "CV":
             party_local_validation_accuracies = get_validation_accuracies(c) # Get local validation accuracies for this partition

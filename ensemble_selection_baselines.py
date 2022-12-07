@@ -5,8 +5,7 @@ import random
 import sys
 import time
 
-from commom_tools import repeat
-from ensemble_selection_clustering import read_parameters, get_dataset_amount
+from common_tools import repeat
 from dbconfig import ensemble_selection_exp_results, ensemble_selection_results
 from ensemble import main
 # from .test import generate_timestamp
@@ -125,7 +124,7 @@ def get_all_situations(length):  # 生成所有的情况
 
 if __name__ == '__main__':
     c = Config(exp_config)
-    ALL = False # Iterate all situations
+    ALL = True # Iterate all situations
     if ALL:
         if c.K >10:
             raise OSError("K is too large")
@@ -153,20 +152,20 @@ if __name__ == '__main__':
     for partition in c.partitions:
         c.partition = partition
         print(c)
-        # all
-        repeat(all_selection, 1, config=c)
-
-        # baseline 1
-        repeat(CV_selection, 1, config=c)
-
-        # baseline 2
-        repeat(data_selection, 1, config=c)
-
-        # baseline 3
-        repeat(random_selection, repeat_times=10, config=c)
-
-        # oracle
-        repeat(oracle, 1, config=c)
+        # # all
+        # repeat(all_selection, 1, config=c)
+        #
+        # # baseline 1
+        # repeat(CV_selection, 1, config=c)
+        #
+        # # baseline 2
+        # repeat(data_selection, 1, config=c)
+        #
+        # # baseline 3
+        # repeat(random_selection, repeat_times=10, config=c)
+        #
+        # # oracle
+        # repeat(oracle, 1, config=c)
 
 
 
@@ -176,5 +175,6 @@ if __name__ == '__main__':
                 try:
                     c.additional_parameters = [selections, i]
                     repeat(traverse_selection, 1, config=c)
+                    print("Traverse Selection", i, selections)
                 except OSError as e:
                     print(e)

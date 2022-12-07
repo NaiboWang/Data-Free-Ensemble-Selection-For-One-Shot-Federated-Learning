@@ -4,10 +4,13 @@ from model.SpinalNet import SpinalVGG
 from model.dla import DLA
 from model.densenet import DenseNet, Bottleneck
 from model.resnet import ResNet50, ResNet18
-def get_model(args):
+def get_model(args, num_classes=None):
     # print(args)
     if args.model == "SpinalNet":
-        model = SpinalVGG(args.num_classes, args.input_channels).to(args.device)
+        if num_classes is None:
+            model = SpinalVGG(args.num_classes, args.input_channels).to(args.device)
+        else:
+            model = SpinalVGG(num_classes, args.input_channels).to(args.device)
     elif args.model == "effenetv2_l":
         model = effnetv2_l(args.num_classes).to(args.device)
     # elif args.model == "efficientnet-b7":

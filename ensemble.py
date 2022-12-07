@@ -44,11 +44,15 @@ def main(config=None):
         }
     c = Config(config)
     # print(c)
-
+    from common_tools import get_dataset_amount
+    dataset_amount = get_dataset_amount(c)
+    # print(dataset_amount)
     meta_data = "%s_%s_%s_%s_b%d" % (c.dataset, c.split, c.model, c.partition, c.batch)
     save_dir = MODEL_DIR + "models/" + meta_data + "/predictions/"
     combine = []
+    weights = []
     for index in c.indexes:
+        weights.append(dataset_amount[index][1])
         if index == c.indexes[0]:
             flag_first = True
         else:
@@ -77,7 +81,12 @@ def main(config=None):
     voting_results = []
     for i in range(len(combine)):
         dt = list(map(float, combine[i]))
-        result = max_voting(dt[1:])
+        if c.weights == "equal":
+            result = max_voting(dt[1:])
+        elif c.weights == "data_size":
+            result = max_voting(dt[1:], weights)
+        if i == 0:
+            print("weigits", weights)
         voting_results.append(float(result))
         labels.append(combine[i][0])
     a = convert_report_to_json(classification_report(labels, voting_results, output_dict=True))
