@@ -16,12 +16,15 @@ from dbconfig import get_path
 DATASET_DIR, MODEL_DIR = get_path()
 
 # Cross-Validation Selection
+
+
 def CV_selection(config):
     K = config["K"]
     party_num = config["party_num"]
     total = 0
     party_local_validation_accuracies = []
-    meta_data = "%s_%s_%s_%s_b%d" % (config.dataset, config.split, config.model, config.partition, config.batch)
+    meta_data = "%s_%s_%s_%s_b%d" % (
+        config.dataset, config.split, config.model, config.partition, config.batch)
     test_results = list(ensemble_selection_results.find(
         {"meta_data": meta_data, "model": config.model, "batch": config.batch, "party_num": party_num, "ensemble": None,
          "parties": {"$size": 1  # Find the test results in the combination contains only one model
@@ -30,8 +33,9 @@ def CV_selection(config):
     for index in range(len(test_results)):
         local_validation_accuracy = test_results[index]["local_validation_accuracy"]
         party = int(test_results[index]["parties"][0])
-        if party != -1: # skip -1 which is the oracle
-            party_local_validation_accuracies.append((party, local_validation_accuracy))
+        if party != -1:  # skip -1 which is the oracle
+            party_local_validation_accuracies.append(
+                (party, local_validation_accuracy))
     # 按照元组第二个键降序排序
     party_local_validation_accuracies = sorted(party_local_validation_accuracies,
                                                key=lambda party_acc: party_acc[1], reverse=True)
@@ -45,6 +49,7 @@ def CV_selection(config):
     # funcName = sys._getframe().f_back.f_code.co_name # 被调用函数名
     funcName = sys._getframe().f_code.co_name  # 当前函数名
     return indexes, funcName, party_local_validation_accuracies
+
 
 def data_selection(config):
     K = config["K"]
@@ -124,9 +129,9 @@ def get_all_situations(length):  # 生成所有的情况
 
 if __name__ == '__main__':
     c = Config(exp_config)
-    ALL = True # Iterate all situations
+    ALL = False  # Iterate all situations
     if ALL:
-        if c.K >10:
+        if c.K > 10:
             raise OSError("K is too large")
         all_situations = get_all_situations(c.party_num)
         print(all_situations)
@@ -143,11 +148,11 @@ if __name__ == '__main__':
             if len(selection) > 0:
                 selections.append(selection)
         print(len(selections), selections)  # 生成所有的情况
-    partitions = ["noniid-labeldir", "homo", "iid-diff-quantity", get_noniid_label_number_split_name(c.split)]
+    partitions = ["noniid-labeldir", "homo", "iid-diff-quantity",
+                  get_noniid_label_number_split_name(c.split)]
     if c.partitions[-1] == "-1":
         c.partitions = partitions
     # partitions = [get_noniid_label_number_split_name(c.split)]
-
 
     for partition in c.partitions:
         c.partition = partition
@@ -166,8 +171,6 @@ if __name__ == '__main__':
         #
         # # oracle
         # repeat(oracle, 1, config=c)
-
-
 
         # traverse
         if ALL:

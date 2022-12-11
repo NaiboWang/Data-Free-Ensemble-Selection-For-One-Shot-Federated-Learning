@@ -64,8 +64,8 @@ def repeat(selection_method=None, repeat_times=50, config=None, qualifier=""):
         "reports": reports,
     }
     with open(MODEL_DIR + "exp_results/data/%s.json" % ts, "w") as f:
-        json.dump(output_info, f)
         ensemble_selection_exp_results.insert_one(output_info)
+        json.dump(output_info, f)
 
 def read_distribution(config):
     party_num = config["party_num"]
