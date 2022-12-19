@@ -49,4 +49,4 @@ sh C.sh # run the script C.sh in the directory of A/B
 
 
 
-# The remaining parts are still updating because the author has been affected by COVID-19 and is now having a high fever, but we finish this supp by Dec 25, 2022, thank you for your patience!
+# The remaining parts are still updating because the author has been affected by COVID-19 and is now having a high fever, but we will finish this readme file by Dec 25, 2022, thank you for your patience!
