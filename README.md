@@ -47,6 +47,6 @@ sh C.sh # run the script C.sh in the directory of A/B
 
 [//]: # (```)
 
-# 解释： 有时候即使设置了K，也不一定可以聚成K类，所有有些方法的结果相同就如此解释
 
-# The remaining parts are still updating, will be finished by Dec 20 2022, thank you for your patience!
+
+# The remaining parts are still updating because the author has been affected by COVID-19 and is now having a high fever, but we finish this supp by Dec 25, 2022, thank you for your patience!
