@@ -13,12 +13,17 @@ Sub generate_pivotTable(sheetname, SEMR)
 '
     Worksheets(sheetname).Activate
     num_columns = ActiveSheet.UsedRange.Columns.Count
-
+    Application.CutCopyMode = False
+    ' Sheets.Add
+    ' ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
+    '     sheetname & "!R1C1:R1048576C" & num_columns, Version:=8).CreatePivotTable _
+    '     TableDestination:="Sheet1!R3C1", TableName:="PivotTable1", DefaultVersion _
+    '     :=8
     Sheets.Add
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
-        sheetname & "!R1C1:R1048576C" & num_columns, Version:=8).CreatePivotTable _
-        TableDestination:="Sheet1!R3C1", TableName:="PivotTable1", DefaultVersion _
-        :=8
+        "exp_results_2212_2112_2016_2018!R1C1:R11943C16", Version:=7). _
+        CreatePivotTable TableDestination:="Sheet2!R3C1", TableName:="数据透视表1", _
+        DefaultVersion:=7
     Sheets("Sheet1").Select
     Cells(3, 1).Select
     With ActiveSheet.PivotTables("PivotTable1")

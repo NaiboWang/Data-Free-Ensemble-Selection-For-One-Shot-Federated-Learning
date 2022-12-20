@@ -157,20 +157,6 @@ if __name__ == '__main__':
     for partition in c.partitions:
         c.partition = partition
         print(c)
-        # # all
-        # repeat(all_selection, 1, config=c)
-        #
-        # # baseline 1
-        # repeat(CV_selection, 1, config=c)
-        #
-        # # baseline 2
-        # repeat(data_selection, 1, config=c)
-        #
-        # # baseline 3
-        # repeat(random_selection, repeat_times=10, config=c)
-        #
-        # # oracle
-        # repeat(oracle, 1, config=c)
 
         # traverse
         if ALL:
@@ -181,3 +167,18 @@ if __name__ == '__main__':
                     print("Traverse Selection", i, selections)
                 except OSError as e:
                     print(e)
+        else:
+            # all
+            repeat(all_selection, 1, config=c)
+            #
+            # # baseline 1
+            repeat(CV_selection, 1, config=c)
+            #
+            # # baseline 2
+            repeat(data_selection, 1, config=c)
+            #
+            # # baseline 3
+            repeat(random_selection, repeat_times=10, config=c)
+            #
+            # # oracle
+            repeat(oracle, 1, config=c)
