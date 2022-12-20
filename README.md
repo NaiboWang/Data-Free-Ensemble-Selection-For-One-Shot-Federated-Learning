@@ -20,14 +20,42 @@ This step will help you to:
 
 3. Configure the database
 
-You can use ./upload.cmd to upload the project to Github.
 
-**Document wait to be updated.**
+## Partition the dataset
 
+### Four types of partition strategies
+
+### The concept of dataset batch ID
+
+## Generate/Train models based on the partitioned dataset
+
+## Evaluate the models and get the output results of the models
+
+## Run baseline algorithms
+
+### The concept of ensemble batch ID
 
 For each batch_ensemble, every different configuration will have different batch_ensemble id.
 
-For shell scripts, the path of the shell scripts should be the absolute path, i.e., .sh files will be affected by the current directory.
+## Run out DeDES algorithm
+
+## Intergrity Checking
+
+### Check the partitioned dataset
+
+### Check the trained models
+
+### Check the test results of the models
+
+## Experimental data processing and visualization
+
+## Other Notes
+
+* You can use ./upload.cmd to upload the project to Github.
+
+
+
+<!-- For shell scripts, the path of the shell scripts should be the absolute path, i.e., .sh files will be affected by the current directory.
 
 E.g., if you are in the directory of `A/B`, then the following two commands will have **different** results:
 
@@ -45,7 +73,7 @@ sh C.sh # run the script C.sh in the directory of A/B
 
 [//]: # (python C.py # run the script C.py in the directory of A/B)
 
-[//]: # (```)
+[//]: # (```) -->
 
 
 
