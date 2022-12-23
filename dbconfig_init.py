@@ -6,7 +6,7 @@ myclient = pymongo.MongoClient('mongodb://username:password@ip:port/', connect=F
 mydb = myclient['exps']
 # ensemble_selection_results = mydb["ensemble_selection_results"]
 ensemble_selection_exp_results = mydb["ensemble_selection_exp_results"]
-ensemble_selection_results = mydb["ensemble_selection_results_old2"]
+ensemble_selection_results = mydb["ensemble_selection_results"]
 
 def get_path():
     print("Use Local Data")

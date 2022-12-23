@@ -24,6 +24,7 @@ exp_config = {
     "label_distribution":False, # whether calculate label distribution oracle, True or False
     "input_channels":3,
     "num_classes":100,
+    "ALL":False, # whether generate all situations when K <=10 to traverse
     "weights": "data_size", # weights for the clients, equal or data_size
     "additional_parameters":[] # additional parameters for the code
 }

@@ -129,37 +129,33 @@ def get_all_situations(length):  # 生成所有的情况
 
 if __name__ == '__main__':
     c = Config(exp_config)
-    ALL = False  # Iterate all situations
-    if ALL:
-        if c.K > 10:
-            raise OSError("K is too large")
-        all_situations = get_all_situations(c.party_num)
-        print(all_situations)
-        selections = []
-        for i in range(len(all_situations)):
-            situation = all_situations[i]
-            selection = []
-            k = 0
-            for j in situation:
-                # print(j, selection)
-                if j == "1":
-                    selection.append(k)
-                k += 1
-            if len(selection) > 0:
-                selections.append(selection)
-        print(len(selections), selections)  # 生成所有的情况
     partitions = ["noniid-labeldir", "homo", "iid-diff-quantity",
                   get_noniid_label_number_split_name(c.split)]
     if c.partitions[-1] == "-1":
         c.partitions = partitions
-    # partitions = [get_noniid_label_number_split_name(c.split)]
 
     for partition in c.partitions:
         c.partition = partition
         print(c)
-
-        # traverse
-        if ALL:
+        # Traverse all situations
+        if c.ALL:
+            if c.K > 10:
+                raise OSError("K is too large")
+            all_situations = get_all_situations(c.party_num)
+            print(all_situations)
+            selections = []
+            for i in range(len(all_situations)):
+                situation = all_situations[i]
+                selection = []
+                k = 0
+                for j in situation:
+                    # print(j, selection)
+                    if j == "1":
+                        selection.append(k)
+                    k += 1
+                if len(selection) > 0:
+                    selections.append(selection)
+            print(len(selections), selections)  # 生成所有的情况
             for i in range(len(selections)):
                 try:
                     c.additional_parameters = [selections, i]
@@ -168,17 +164,17 @@ if __name__ == '__main__':
                 except OSError as e:
                     print(e)
         else:
-            # all
+            # All selection
             repeat(all_selection, 1, config=c)
-            #
-            # # baseline 1
+
+            # CV Selection
             repeat(CV_selection, 1, config=c)
-            #
-            # # baseline 2
+
+            # Data Selection
             repeat(data_selection, 1, config=c)
-            #
-            # # baseline 3
+
+            # Random Selection
             repeat(random_selection, repeat_times=10, config=c)
-            #
-            # # oracle
+
+            # Oracle
             repeat(oracle, 1, config=c)

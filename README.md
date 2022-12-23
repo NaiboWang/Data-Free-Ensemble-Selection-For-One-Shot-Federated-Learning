@@ -16,9 +16,9 @@ python init.py
 
 This step will help you to:
 * Make the directory for the algorithm.
-* Rename `dbconfig_init.py` to `dbconfig.py` and then you need to artificially fill in the database information.
+* Rename `dbconfig_init.py` to `dbconfig.py` and then you need to artificially fill in the database information (default database name is `exps`, there are two tables in the database, which are `ensemble_selection_exp_results`  `ensemble_selection_results`).
 
-3. Configure the database
+1. Configure the database
 
 
 ## Partition the dataset
