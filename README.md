@@ -20,7 +20,7 @@
 
     This step will help you to:
     * Make required directories for the experiments.
-    * Rename `dbconfig_init.py` to `dbconfig.py` and then you need to artificially fill in the database information (username, password, ip, and port name) in the `dbconfig.py` script at `line 5`.
+    * Rename `dbconfig_init.py` to `dbconfig.py` and then you need to **artificially fill in the database information** (username, password, ip, and port name) in the `dbconfig.py` script at `line 5`.
 
 
 3. Configure your mongodb database.
