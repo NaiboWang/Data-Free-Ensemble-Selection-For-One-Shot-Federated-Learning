@@ -11,5 +11,3 @@ scipy==1.9.1
 setuptools==63.4.1
 six==1.16.0
 sotabencheval
-torch==1.12.1
-torchvision==0.13.1

@@ -4,11 +4,13 @@
 
 1. Install the required packages
 
+Install `pytorch` and `torchvision` with `conda` based on your cuda version: https://pytorch.org/get-started/locally/
+
+Then install the remaining required packages:
+
 ```bash
 pip install -r requirements.txt
 ```
-
-We also recommend to install pytorch with `conda`.
 
 2. Initialize the environment and files
 
