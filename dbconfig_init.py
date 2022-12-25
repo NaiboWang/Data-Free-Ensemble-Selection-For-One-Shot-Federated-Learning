@@ -7,6 +7,7 @@ mydb = myclient['exps']
 # ensemble_selection_results = mydb["ensemble_selection_results"]
 ensemble_selection_exp_results = mydb["ensemble_selection_exp_results"]
 ensemble_selection_results = mydb["ensemble_selection_results"]
+train_config = mydb["train_config"]
 
 def get_path():
     print("Use Local Data")

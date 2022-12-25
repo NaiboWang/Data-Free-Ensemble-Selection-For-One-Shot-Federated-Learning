@@ -12,4 +12,4 @@ if __name__ == '__main__':
         os.mkdir("exp_results/logs")
     if not os.path.exists("dbconfig.py"):
         os.system("cp dbconfig_init.py dbconfig.py")
-        print("Please edit dbconfig.py to set your database configuration.")
+        print("Initialization successfully, the next step is to configure your database, please edit dbconfig.py to set your database configuration parameters.")

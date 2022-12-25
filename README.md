@@ -8,6 +8,8 @@
 pip install -r requirements.txt
 ```
 
+We also recommend to install pytorch with `conda`.
+
 2. Initialize the environment and files
 
 ```bash
@@ -21,7 +23,7 @@ This step will help you to:
 
 3. Configure your mongodb database
 
-The default database name is `exps`, you will need to create two tables in your database, which are `ensemble_selection_exp_results` and `ensemble_selection_results`.
+The default database name is `exps`, you will need to create three tables in your database, which are `train_config`, `ensemble_selection_exp_results` and `ensemble_selection_results`.
 
 ## Partition the dataset
 
@@ -68,25 +70,65 @@ python train_model.py --index $i --partition $partition --party_num $party_num -
 * `$input_channels` is the number of input channels.
 * `$num_classes` is the number of classes.
 
-E.g., you can train the model `resnet50` on the `10th` data of the partitioned `EMNIST Digits` dataset with batch ID `1` with `100` clients using the `homo` partition strategy on your local device `cuda:0` by using the following command:
+E.g., you can train the model `resnet50` on the `10th` (start from 0) data of the partitioned `EMNIST Digits` dataset with batch ID `1` with `100` clients using the `homo` partition strategy on your local device `cuda:0` by using the following command:
 
 ```bash
-python train_model.py --index 10 --partition homo --party_num 100 --split digits --device cuda:0 --batch 1 --dataset emnist --model resnet50 --input_channels 1 --num_classes 10
+python train_model.py --index 9 --partition homo --party_num 100 --split digits --device cuda:0 --batch 1 --dataset emnist --model resnet50 --input_channels 1 --num_classes 10
 ```
 
-After training the model, you will get a model file in the `model` directory, which is in the format of `dataset_split_partition_(num_clients)_b(ID)_model.pkl`:
-
+After training the model, you will get a model file in the `models` directory.
 
 ## Evaluate the models and get the output results of the models
 
+To evaluate the model, you can use the following command:
+
+```bash
+python test_model.py --index $i --partition $element --party_num $party_num --split $split --batch $batch --device $device --dataset $dataset --input_channels $input_channels --num_classes $num_classes --model $model
+```
+
+The configuration of the parameters is the same as the training model section.
+
+Example command:
+
+```bash
+python test_model.py --index 9 --partition homo --party_num 100 --split digits --device cuda:0 --batch 1 --dataset emnist --model resnet50 --input_channels 1 --num_classes 10
+```
+
+The test results and statistics will be saved to the dataset and also local files in the `models` directory.
+
+Before you run any ensemble selection method, ensure that you have trained all models you need to select from and already tested by the `train_model.py` and `test_model.py` scripts respectively.
+
 ## Run baseline algorithms
 
-### The concept of ensemble batch ID
+Similar as the `batch ID`, we will have a `ensemble batch ID` for each run of the ensemble algorithms.
 
-For each batch_ensemble, every different configuration will have different batch_ensemble id.
+To run the baseline algorithms, you can use the following command:
 
-## Run out DeDES algorithm
+```bash
+python ensemble_selection_baselines.py --parameter <parameter_value> --parameter <parameter_value> ... --parameter <parameter_value>
+```
 
+Please refer to the `config.py` script to see all configurable parameters, e.g., to set the dataset name, pass the parameter `--dataset <dataset_name>`.
+
+## Run our DeDES algorithm
+
+Similarly, to run our DeDES algorithm, you can use the following command:
+
+```bash
+python ensemble_selection_clustering.py --parameter <parameter_value> --parameter <parameter_value> ... --parameter <parameter_value>
+```
+
+One example of the command is:
+
+```bash
+python ensemble_selection_clustering.py --split balanced --party_num 400 --K 10 --batch 2 --batch_ensemble 8 --selection_method mixed --normalization 1 --last_layer 0 
+```
+
+The `--batch` is the `batch ID` and the `--batch_ensemble` is the `ensemble batch ID`.
+
+Then the results of the baselines and DeDES will be saved to the database in the `ensemble_selection_exp_results` table.
+
+<!-- 
 ## Intergrity Checking
 
 ### Check the partitioned dataset
@@ -95,7 +137,7 @@ For each batch_ensemble, every different configuration will have different batch
 
 ### Check the test results of the models
 
-## Experimental data processing and visualization
+## Experimental data processing and visualization -->
 
 ## Other Notes
 
