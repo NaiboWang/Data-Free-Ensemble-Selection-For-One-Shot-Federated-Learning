@@ -328,7 +328,28 @@ if __name__ == '__main__':
     config_emnist_balanced = [201, "emnist", 'balanced', 47, [5,10,100,200,400]]
     config_cifar10 = [211, "cifar10", 'cifar10', 10, [5,10,50,100,200]]
     config_cifar100 = [221, "cifar100", 'cifar100', 100, [5,10,20]]
-    config = config_cifar100
+    
+    c = commandline_config.Config({
+        "dataset": "emnist",
+        "split": "digits",
+        "ID": 1,
+        "num_clients":[5,10,100,200,400],
+        "ratio": [0.7,0.1,0.2], # partition ratio for training/validation/test set
+    })
+
+    if c.split == "digits":
+        config = config_emnist_digits
+    elif c.split == "letters":
+        config = config_emnist_letters
+    elif c.split == "balanced":
+        config = config_emnist_balanced
+    elif c.split == "cifar10":
+        config = config_cifar10
+    elif c.split == "cifar100":
+        config = config_cifar100
+    config[0] = c.ID
+    config[4] = c.num_clients
+
     batch = config[0]
     dtset = config[1]
     split = config[2]
@@ -358,7 +379,7 @@ if __name__ == '__main__':
                 for i in range(n_parties):
                     map = np.asarray(net_dataidx_map[i])
                     n = map.shape[0]
-                    ratio = [0.7,0.1,0.2] # 训练集验证集测试集切分比例，[0.6,0.2,0.2],[0.5,0.25,0.25]
+                    ratio = c.ratio
                     while True:
                         idxs = np.random.permutation(n)  # 随机打乱
                         map = map[idxs]
