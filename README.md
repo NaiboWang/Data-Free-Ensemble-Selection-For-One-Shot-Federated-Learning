@@ -108,7 +108,7 @@ To run the baseline algorithms, you can use the following command:
 python ensemble_selection_baselines.py --parameter <parameter_value> --parameter <parameter_value> ... --parameter <parameter_value>
 ```
 
-Please refer to the `config.py` script to see all configurable parameters, e.g., to set the dataset name, pass the parameter `--dataset <dataset_name>`.
+Please refer to the `config.py` script to see all configurable parameters, e.g., to set the dataset name, pass the parameter `--dataset <dataset_name>`; to specify `K` as `20`, pass `--K 20`.
 
 ## Run our DeDES algorithm
 
@@ -140,6 +140,17 @@ Then the results of the baselines and DeDES will be saved to the database in the
 ## Experimental data processing and visualization -->
 
 ## Other Notes
+
+* `batch_train.sh`, `batch_test.sh` can help you to train and test models in batch.
+
+* The scripts end with `_script.sh` inside the `batches` directory are the scripts used to run the experiments in the paper in batch.
+
+    E.g., to run all baselines methods and DeDES on the `EMNIST Digits` dataset you can use the following command:
+
+    ```bash
+    cd batches
+    bash batch_ensemble_script_emnist_digits.sh
+    ```
 
 * You can use ./upload.cmd to upload the project to Github.
 
