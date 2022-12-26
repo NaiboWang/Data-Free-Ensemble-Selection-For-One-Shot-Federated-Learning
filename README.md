@@ -118,9 +118,7 @@ Please refer to the `exp_config` dict in the `config.py` script to see all confi
 Example of running the baseline algorithms:
 
 ```bash
-
 python -u ensemble_selection_baselines.py --split cifar100 --dataset cifar100 --input_channels 3 --num_classes 100 --model dla --party_num 5 --K 3 --batch 221 --batch_ensemble 2212
-
 ```
 
 The `--batch` is the `batch ID` and the `--batch_ensemble` is the `ensemble batch ID`.
