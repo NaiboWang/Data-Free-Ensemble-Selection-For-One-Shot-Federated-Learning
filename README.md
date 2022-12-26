@@ -1,31 +1,31 @@
-# Ensemble Selection for One-Shot Federated Learning in Machine Learning Model Market
+# Ensemble Selection algorithms for One-Shot Federated Learning in Machine Learning Model Market
 
 ## Initialization
 
-1. Install the required packages
+1. Install the required packages.
 
-Install `pytorch` and `torchvision` with `conda` based on your cuda version: https://pytorch.org/get-started/locally/
+    Install `pytorch` and `torchvision` with `conda` based on your cuda version: https://pytorch.org/get-started/locally/
 
-Then install the remaining required packages:
+    Then install the remaining required packages:
 
-```bash
-pip install -r requirements.txt
-```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-2. Initialize the environment and files
+2. Initialize the environment and files.
 
-```bash
-python init.py
-```
+    ```bash
+    python init.py
+    ```
 
-This step will help you to:
-* Make the directory for the algorithm.
-* Rename `dbconfig_init.py` to `dbconfig.py` and then you need to artificially fill in the database information (username, password, ip, and port name).
+    This step will help you to:
+    * Make required directories for the experiments.
+    * Rename `dbconfig_init.py` to `dbconfig.py` and then you need to artificially fill in the database information (username, password, ip, and port name) in the `dbconfig.py` script at `line 5`.
 
 
-3. Configure your mongodb database
+3. Configure your mongodb database.
 
-The default database name is `exps`, you will need to create three tables in your database, which are `train_config`, `ensemble_selection_exp_results` and `ensemble_selection_results`.
+    You will need to create a database whose name is `exps`, and create three tables in your `exps` database, which are `train_config`, `ensemble_selection_exp_results` and `ensemble_selection_results`. Also, you can change your database and table name at the `dbconfig.py` script after step 2.
 
 ## Partition the dataset
 
@@ -38,6 +38,8 @@ python generate_dataset.py --dataset <dataset_name> --split <split_name> --ID <b
 Every dataset will have a `batch ID` for us to identify and distinguish different batch of datasets. When training models, our code will seek the specified batch ID of the dataset. If the batch ID is not specified, the code will use the default batch ID, which is `0`.
 
 The code will help you to automatically partition the dataset according to the four types of partition strategies (homo, iid-dq, noniid-lds, noniid-lk).
+
+Supported datasets now: `EMNIST Digits`, `EMNIST Letters`, `EMNIST balanced`, `CIFAR10`, and `CIFAR100`.
 
 E.g., you can partition the `EMNIST Digits` dataset with batch ID `1` into 100 clients with all 4 partition strategies by using the following command:
 
@@ -52,10 +54,11 @@ After partitioning the dataset, you will get 4 files in the `files` directory, w
 * `files/emnist_digits_noniid-labeldir_100_b1.pkl` // noniid-lds
 * `files/emnist_digits_noniid-#label3_100_b1.pkl` // noniid-lk
 
+Every file will contains the training/validation/test set for all 100 clients, starts with 0. 
 
 ## Generate/Train models based on the partitioned dataset
 
-To train the model on the partitioned dataset, you can use the following command:
+To train a model on the partitioned dataset, you can use the following command:
 
 ```bash
 python train_model.py --index $i --partition $partition --party_num $party_num --split $split --device $device --batch $batch --dataset $dataset --model $model --input_channels $input_channels --num_classes $num_classes
@@ -72,7 +75,7 @@ python train_model.py --index $i --partition $partition --party_num $party_num -
 * `$input_channels` is the number of input channels.
 * `$num_classes` is the number of classes.
 
-E.g., you can train the model `resnet50` on the `10th` (start from 0) data of the partitioned `EMNIST Digits` dataset with batch ID `1` with `100` clients using the `homo` partition strategy on your local device `cuda:0` by using the following command:
+E.g., you can train the model `resnet50` on the `10th` (starts from 0) data of the `homo` partitioned `EMNIST Digits` dataset with batch ID `1` which has `100` clients on your local device `cuda:0` by using the following command:
 
 ```bash
 python train_model.py --index 9 --partition homo --party_num 100 --split digits --device cuda:0 --batch 1 --dataset emnist --model resnet50 --input_channels 1 --num_classes 10
@@ -98,11 +101,11 @@ python test_model.py --index 9 --partition homo --party_num 100 --split digits -
 
 The test results and statistics will be saved to the dataset and also local files in the `models` directory.
 
-Before you run any ensemble selection method, ensure that you have trained all models you need to select from and already tested by the `train_model.py` and `test_model.py` scripts respectively.
+Before you run any ensemble selection algorithm, ensure that you have trained all models you need to select from by the `train_model.py` script, and already get tested results by the `test_model.py` script.
 
 ## Run baseline algorithms
 
-Similar as the `batch ID`, we will have a `ensemble batch ID` for each run of the ensemble algorithms.
+Similar as the `batch ID`, we will have a `ensemble batch ID` for each run of the ensemble algorithms to distinguish ensemble selection results in batch.
 
 To run the baseline algorithms, you can use the following command:
 
@@ -110,7 +113,17 @@ To run the baseline algorithms, you can use the following command:
 python ensemble_selection_baselines.py --parameter <parameter_value> --parameter <parameter_value> ... --parameter <parameter_value>
 ```
 
-Please refer to the `config.py` script to see all configurable parameters, e.g., to set the dataset name, pass the parameter `--dataset <dataset_name>`; to specify `K` as `20`, pass `--K 20`.
+Please refer to the `exp_config` dict in the `config.py` script to see all configurable parameters and then pass value of the paramater by `--parameter <parameter_value>`, e.g., to set the dataset name, pass the parameter `--dataset <dataset_name>`; to specify `K` as `20`, pass `--K 20`. The unspecified parameters will have default values which are the keys' values of the `exp_config` dict at the `config.py` script.
+
+Example of running the baseline algorithms:
+
+```bash
+
+python -u ensemble_selection_baselines.py --split cifar100 --dataset cifar100 --input_channels 3 --num_classes 100 --model dla --party_num 5 --K 3 --batch 221 --batch_ensemble 2212
+
+```
+
+The `--batch` is the `batch ID` and the `--batch_ensemble` is the `ensemble batch ID`.
 
 ## Run our DeDES algorithm
 
@@ -126,7 +139,7 @@ One example of the command is:
 python ensemble_selection_clustering.py --split balanced --party_num 400 --K 10 --batch 2 --batch_ensemble 8 --selection_method mixed --normalization 1 --last_layer 0 
 ```
 
-The `--batch` is the `batch ID` and the `--batch_ensemble` is the `ensemble batch ID`.
+Samely, the `--batch` is the `batch ID` and the `--batch_ensemble` is the `ensemble batch ID`.
 
 Then the results of the baselines and DeDES will be saved to the database in the `ensemble_selection_exp_results` table.
 
@@ -147,7 +160,7 @@ Then the results of the baselines and DeDES will be saved to the database in the
 
 * The scripts end with `_script.sh` inside the `batches` directory are the scripts used to run the experiments in the paper in batch.
 
-    E.g., to run all baselines methods and DeDES on the `EMNIST Digits` dataset you can use the following command:
+    E.g., to run all baselines methods and DeDES on the `EMNIST Digits` dataset, you can use the following command:
 
     ```bash
     cd batches

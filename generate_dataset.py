@@ -332,7 +332,7 @@ if __name__ == '__main__':
     c = commandline_config.Config({
         "dataset": "emnist",
         "split": "digits",
-        "ID": 1,
+        "ID": 0,
         "num_clients":[5,10,100,200,400],
         "ratio": [0.7,0.1,0.2], # partition ratio for training/validation/test set
     })
