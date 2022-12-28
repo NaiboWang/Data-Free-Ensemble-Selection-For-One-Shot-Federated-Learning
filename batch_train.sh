@@ -1,4 +1,4 @@
-# 训练模型
+# Train models
 config_emnist_digits=(
 201 # batch_size
 noniid-\#label3
@@ -64,8 +64,7 @@ input_channels=${config[5]}
 
 
 #echo $(seq 0 $[party_num - 1])
-for element in ${partition[@]} # 遍历数组
-#也可以写成for element in ${array[*]}
+for element in ${partition[@]} 
 do
   for i in $(seq 0 $[party_num - 1])
   do

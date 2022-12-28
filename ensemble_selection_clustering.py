@@ -36,7 +36,7 @@ def get_indexes_by_CV(config, wheres):
 
     for i in range(K):
         where = wheres[i]
-        if len(where) > 0:  # 防止分不到K个类的情况
+        if len(where) > 0:  
             partial_accuracies = []
             for j in range(len(where)):
                 index_ts = where[j]
@@ -48,19 +48,19 @@ def get_indexes_by_CV(config, wheres):
             partial_accuracies = sorted(partial_accuracies, key=lambda party_acc: party_acc[1],
                                         reverse=True)
             index = partial_accuracies[0][0]
-            cluster_indexes.append(int(index))  # 类型转换防止int64错误
+            cluster_indexes.append(int(index))  # avoid int64 error
     cluster_indexes.sort()
     # print(cluster_indexes)
     return cluster_indexes
 
 def get_indexes_by_data(config, wheres):
     global party_dataset_amount
-    # print(party_dataset_amount)  # 测试数据集大小是否正确以及是否正确排序
+    # print(party_dataset_amount)  
     cluster_indexes = []
     K = config["K"]
     for i in range(K):
         where = wheres[i]
-        if len(where) > 0:  # 防止分不到K个类的情况
+        if len(where) > 0:  # in case cannot have K clusters
             partial_dataset_amounts = []
             for j in range(len(where)):
                 index_ts = where[j]
@@ -72,7 +72,7 @@ def get_indexes_by_data(config, wheres):
             partial_dataset_amounts = sorted(partial_dataset_amounts, key=lambda party_amount: party_amount[1],
                                         reverse=True)
             index = partial_dataset_amounts[0][0]
-            cluster_indexes.append(int(index))  # 类型转换防止int64错误
+            cluster_indexes.append(int(index))  
     cluster_indexes.sort()
     # print(cluster_indexes)
     return cluster_indexes
@@ -85,7 +85,7 @@ def get_indexes_by_mixed(config, wheres, difference_threshold=2):
 
     for i in range(K):
         where = wheres[i]
-        if len(where) > 0:  # 防止分不到K个类的情况
+        if len(where) > 0:  
             partial_accuracies = []
             partial_dataset_amounts = []
             for j in range(len(where)):
@@ -114,7 +114,7 @@ def get_indexes_by_mixed(config, wheres, difference_threshold=2):
                 index = partial_dataset_amounts[0][0]
             else:
                 index = partial_accuracies[0][0]
-            cluster_indexes.append(int(index))  # 类型转换防止int64错误
+            cluster_indexes.append(int(index))  
     cluster_indexes.sort()
     # print(cluster_indexes)
     return cluster_indexes
@@ -125,10 +125,8 @@ def hierarchical_clustering_selection(config):
     party_num = config["party_num"]
 
     # print("Length of weights:",len(weights))
-    # 进行层次聚类，
-    # TODO思路：把最终分成的类内的模型做个加权平均看看效果
     Z = linkage(flatten_weights, method=config["cluster_method"])
-    f = fcluster(Z, t=K, criterion='maxclust') # criterion为maxclust即最大聚为几类 此时t的值就是最大的类数
+    f = fcluster(Z, t=K, criterion='maxclust') 
     try:
         fig = plt.figure(figsize=(15, 10))
         dn = dendrogram(Z)
@@ -136,10 +134,10 @@ def hierarchical_clustering_selection(config):
         # print('f:\n', f)
         plt.title(config["partition"] + "_" + config["cluster_method"])
         plt.show()
-    except: # 命令行不能可视化
+    except: 
         pass
     # cluster_indexes = []
-    # 暂时：每个类的第一个模型为选择的模型
+    
     wheres = []
     for i in range(K):
         wheres.append(np.where(f==i+1)[0])
@@ -152,8 +150,8 @@ def hierarchical_clustering_selection(config):
         cluster_indexes = get_indexes_by_mixed(config, wheres)
 
     # print(cluster_indexes)
-    # funcName = sys._getframe().f_back.f_code.co_name # 被调用函数名
-    funcName = sys._getframe().f_code.co_name  # 当前函数名
+    # funcName = sys._getframe().f_back.f_code.co_name 
+    funcName = sys._getframe().f_code.co_name  
     return cluster_indexes, funcName, convert_int(f)
 
 def kmeans_clustering_selection(config):
@@ -162,29 +160,29 @@ def kmeans_clustering_selection(config):
 
     # Conduct KMeans Clustering
     cluster = KMeans(n_clusters=K)
-    y_pred = cluster.fit_predict(flatten_weights)  # 训练
+    y_pred = cluster.fit_predict(flatten_weights)  
     # print(y_pred)
-    # print(cluster.cluster_centers_)  # 返回得到的几个质心
+    # print(cluster.cluster_centers_)  
     # y_pred = cluster.predict(flatten_weights)
-    # print(y_pred)  # 每个样本对应的结果
+    # print(y_pred)  
 
     try:
-        fig, ax1 = plt.subplots(1)  # 生成子图的数量，第一个是画布，第二个是对象
+        fig, ax1 = plt.subplots(1)  
         np_flatten_weights = np.asarray(flatten_weights)
         for i in range(K):
-            ax1.scatter(np_flatten_weights[y_pred == i, 0], np_flatten_weights[y_pred == i, 1],  # 使用布尔索引
-                        marker='o',  # 点形状
-                        s=8,  # 点大小
-                        )  # 设置点颜色
-        # 单独把质心画出来
-        ax1.scatter(cluster.cluster_centers_[:, 0], cluster.cluster_centers_[:, 1],  # 使用布尔索引
-                    marker='x',  # 点形状
-                    s=15,  # 点大小
-                    c='yellow')  # 设置点颜色
+            ax1.scatter(np_flatten_weights[y_pred == i, 0], np_flatten_weights[y_pred == i, 1],  
+                        marker='o',  
+                        s=8,  
+                        )  
+        
+        ax1.scatter(cluster.cluster_centers_[:, 0], cluster.cluster_centers_[:, 1],  
+                    marker='x',  
+                    s=15,  
+                    c='yellow')  
 
         plt.title('Result after Spectral Clustering')
         plt.show()
-    except: # 命令行不能可视化
+    except: 
         pass
 
     wheres = []
@@ -200,8 +198,8 @@ def kmeans_clustering_selection(config):
 
 
     # print(cluster_indexes)
-    # funcName = sys._getframe().f_back.f_code.co_name # 被调用函数名
-    funcName = sys._getframe().f_code.co_name  # 当前函数名
+    # funcName = sys._getframe().f_back.f_code.co_name 
+    funcName = sys._getframe().f_code.co_name  
     return cluster_indexes, funcName, convert_int(y_pred)
 
 def dbscan_clustering_selection(config):
@@ -210,43 +208,43 @@ def dbscan_clustering_selection(config):
 
     # Conduct DBSCAN Clustering
     cluster = DBSCAN()
-    # cluster = cluster.fit(flatten_weights)  # 训练
+    # cluster = cluster.fit(flatten_weights)  
     # pred = cluster.labels_
     # unique_cluster_labels = set(pred)
     # n_clusters = len(unique_cluster_labels) - (-1 in pred)
-    # print(cluster.cluster_centers_)  # 返回得到的几个质心
+    # print(cluster.cluster_centers_)  
     y_pred = cluster.fit_predict(flatten_weights)
-    # print(y_pred)  # 每个样本对应的结果
+    # print(y_pred)  
 
     try:
-        fig, ax1 = plt.subplots(1)  # 生成子图的数量，第一个是画布，第二个是对象
+        fig, ax1 = plt.subplots(1)  
         np_flatten_weights = np.asarray(flatten_weights)
         for i in range(K):
-            ax1.scatter(np_flatten_weights[y_pred == i, 0], np_flatten_weights[y_pred == i, 1],  # 使用布尔索引
-                        marker='o',  # 点形状
-                        s=8,  # 点大小
-                        )  # 设置点颜色
-        # 单独把质心画出来
-        ax1.scatter(cluster.cluster_centers_[:, 0], cluster.cluster_centers_[:, 1],  # 使用布尔索引
-                    marker='x',  # 点形状
-                    s=15,  # 点大小
-                    c='yellow')  # 设置点颜色
+            ax1.scatter(np_flatten_weights[y_pred == i, 0], np_flatten_weights[y_pred == i, 1],  
+                        marker='o',  
+                        s=8,  
+                        )  
+        
+        ax1.scatter(cluster.cluster_centers_[:, 0], cluster.cluster_centers_[:, 1],  
+                    marker='x',  
+                    s=15,  
+                    c='yellow')  
 
         plt.title('Clustering result after DBSCAN')
         plt.show()
-    except: # 命令行不能可视化
+    except: 
         pass
     cluster_indexes = []
-    # 暂时：每个类的第一个模型为选择的模型
+    
     for i in range(K):
         where = np.where(y_pred==i)[0]
-        if len(where)>0: # 防止分不到K个类的情况
+        if len(where)>0: 
             index = where[0]
-            cluster_indexes.append(int(index)) # 类型转换防止int64错误
+            cluster_indexes.append(int(index)) 
     cluster_indexes.sort()
     # print(cluster_indexes)
-    # funcName = sys._getframe().f_back.f_code.co_name # 被调用函数名
-    funcName = sys._getframe().f_code.co_name  # 当前函数名
+    # funcName = sys._getframe().f_back.f_code.co_name 
+    funcName = sys._getframe().f_code.co_name  
     return cluster_indexes, funcName, convert_int(y_pred)
 
 def spectral_clustering_selection(config):
@@ -255,23 +253,23 @@ def spectral_clustering_selection(config):
 
     # Conduct KMeans Clustering
     cluster = SpectralClustering(n_clusters=K)
-    y_pred = cluster.fit_predict(flatten_weights)  # 训练
+    y_pred = cluster.fit_predict(flatten_weights)  
     # print(y_pred)
-    # print(cluster.cluster_centers_)  # 返回得到的几个质心
+    # print(cluster.cluster_centers_)  
     # y_pred = cluster.predict(flatten_weights)
-    # print(y_pred)  # 每个样本对应的结果
+    # print(y_pred)  
 
     try:
-        fig, ax1 = plt.subplots(1)  # 生成子图的数量，第一个是画布，第二个是对象
+        fig, ax1 = plt.subplots(1)  
         np_flatten_weights = np.asarray(flatten_weights)
         for i in range(K):
-            ax1.scatter(np_flatten_weights[y_pred == i, 0], np_flatten_weights[y_pred == i, 1],  # 使用布尔索引
-                        marker='o',  # 点形状
-                        s=8,  # 点大小
-                        )  # 设置点颜色
+            ax1.scatter(np_flatten_weights[y_pred == i, 0], np_flatten_weights[y_pred == i, 1],  
+                        marker='o',  
+                        s=8,  
+                        )  
         plt.title('Clustering result after KMeans')
         plt.show()
-    except: # 命令行不能可视化
+    except: 
         pass
 
     wheres = []
@@ -287,8 +285,8 @@ def spectral_clustering_selection(config):
 
 
     # print(cluster_indexes)
-    # funcName = sys._getframe().f_back.f_code.co_name # 被调用函数名
-    funcName = sys._getframe().f_code.co_name  # 当前函数名
+    # funcName = sys._getframe().f_back.f_code.co_name 
+    funcName = sys._getframe().f_code.co_name  
     return cluster_indexes, funcName, convert_int(y_pred)
 
 if __name__ == '__main__':
@@ -324,12 +322,6 @@ if __name__ == '__main__':
             party_local_validation_accuracies = get_validation_accuracies(c)
             party_dataset_amount = get_dataset_amount(c)
 
-        # 以下为层次聚类方法
-        # ’single’：一范数距离
-        # ’complete’：无穷范数距离
-        # ’average’：平均距离
-        # ’centroid’：二范数距离
-        # ’ward’：离差平方和距离
         for cluster_method in hierarchical_cluster_methods:
             c.cluster_method = cluster_method
             print(partition, cluster_method)
@@ -359,7 +351,6 @@ if __name__ == '__main__':
         # TODO: Try variance to select
         # Select with CV Selection/Data Selection/Most Centralized model
         # PCA/LDA dimension reduction (Also, try SVD?)
-        # 对无监督的任务使用PCA 进行降维，对有监督的则应用LDA。
         # TODO: efficientnet dimension of 118094767
         """
         NOTE: It is really a good research point of how to reduce the dimension of a deep learning model to get better clustering results! Not just use PCA/t-NSE/LDA, and how to decide the correct dimension to reduce to is another problem.

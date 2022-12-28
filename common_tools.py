@@ -123,7 +123,7 @@ def get_outliers(config):
         {"meta_data": meta_data, "model": config.model, "batch": config.batch, "party_num": config.party_num,
          "ensemble": None,
          "parties": {"$size": 1  # Find the test results in the combination contains only one model
-                     }}))  # 查找原始测试数据集的测试结果
+                     }})) 
     party_local_validation_accuracies = []
     for index in range(len(test_results)):
         local_validation_accuracy = test_results[index]["local_validation_accuracy"]
@@ -185,7 +185,6 @@ def read_parameters(config, flatten = True):
         # for key in model.state_dict().keys():
         #     print(key)
         if flatten:
-            # 第一种方式，把所有的权值展平成一层，形成一个mXn的二维矩阵，m是party number，n是单个模型所有的节点数量，即纬度数
             all_keys = filtered_weights[0][1].keys()
             random_indexes = list(random.sample(range(len(all_keys) - 1), min(len(filtered_weights), int(len(all_keys) * 0.1))))
             random_indexes.sort()
@@ -283,7 +282,7 @@ def get_validation_accuracies(config):
     test_results = list(ensemble_selection_results.find(
         {"meta_data": meta_data, "model": config.model, "batch": config.batch, "party_num": config.party_num, "ensemble": None,
          "parties": {"$size": 1  # Find the test results in the combination contains only one model
-                     }}))  # 查找原始测试数据集的测试结果
+                     }})) 
     length_test = len(test_results)
     try:
         assert length_test == config.party_num + 1

@@ -166,41 +166,36 @@ def partition_data(dataset="emnist", datadir="data/", split="default", logdir="l
     elif partition == "noniid-labeldir":
         min_size = 0
         min_require_size = 120
-        K = num_label  # 标签数量
+        K = num_label 
 
         N = y_train.shape[0]
         np.random.seed(2020)
         net_dataidx_map = {}
 
-        # 重复分配直到每个party的数据量都达到了最小需要的size
+        
         while min_size < min_require_size:
             idx_batch = [[] for _ in range(n_parties)]
-            # ?这里有时候会分配到某个party导致缺少一些标签，是否正常？比如party 0 只包含012345没有6789
+            
             for k in range(K):
-                # np.where 只有条件 (condition)，没有x和y，则输出满足条件 (标签为k) 元素的坐标
+                
                 idx_k = np.where(y_train == k)[0]
                 np.random.shuffle(idx_k)
-                # np.repeat 将第一个参数重复第二个参数次生成一个数组
+                
 
                 proportions = np.random.dirichlet(np.repeat(beta, n_parties))
                 # logger.info("proportions1: ", proportions)
                 # logger.info("sum pro1:", np.sum(proportions))
                 ## Balance
-                # 下面公式先判断idx_j的长度是否小于N/n_parties，如果是返回1否则0，再乘p
-                # zip(a,b)根据a和b的最短长度决定zip大小，然后分别输出a和b的对应元素值
-                # 下面这行的意思是，如果当前party的元素数量已经超过了N/n_parties则返回0，即不往数组里继续添加当前元素，否则返回对应比例
+                
                 proportions = np.array([p * (len(idx_j) < N / n_parties) for p, idx_j in zip(proportions, idx_batch)])
                 # logger.info("proportions2: ", proportions)
                 proportions = proportions / proportions.sum()
                 # logger.info("proportions3: ", proportions)
-                # cumsum([1,2,3,1]) => [1,3,6,7], [:-1]去掉最后一个元素
                 proportions = (np.cumsum(proportions) * len(idx_k)).astype(int)[:-1]
                 # logger.info("proportions4: ", proportions)
-                # split(ary, indices_or_sections, axis=0) :把一个数组从左到右按顺序切分,下面一行就是将idx_k这个标签对应的元素的数组按照生成好的分配规则切分之后放在idx_batch数组中
-                # https://blog.csdn.net/mingyuli/article/details/81227629
+                
                 # [] + [1,2] = [1,2], [1] + [2,3] = [1,2,3]
                 idx_batch = [idx_j + idx.tolist() for idx_j, idx in zip(idx_batch, np.split(idx_k, proportions))]
-                # 小bug，不应该写在这里
                 min_size = min([len(idx_j) for idx_j in idx_batch])
                 # if K == 2 and n_parties <= 10:
                 #     if np.min(proportions) < 200:
@@ -212,50 +207,41 @@ def partition_data(dataset="emnist", datadir="data/", split="default", logdir="l
             net_dataidx_map[j] = idx_batch[j]
 
     elif partition > "noniid-#label0" and partition <= "noniid-#label999":
-        num = eval(partition[13:])  # 得到#label后面的数字
+        num = eval(partition[13:])  
         num -= 1
         K = num_label
         assert (num+1) * n_parties > num_label # ensure all labels are covered by n_parties
-        # 如何label后面的值为K，如数字数据集为10的时候，即需要给每个party分配所有的类别的数据
         if num == K:
-            # 每个party初始化一个空int数组
             net_dataidx_map = {i: np.ndarray(0, dtype=np.int64) for i in range(n_parties)}
             for i in range(K):
                 idx_k = np.where(y_train == i)[0]
                 np.random.shuffle(idx_k)
-                # 把idx_k平均切分成n_parties份
                 split = np.array_split(idx_k, n_parties)
-                # 往net_dataidx_map数组中添加split后的indexes
                 for j in range(n_parties):
                     net_dataidx_map[j] = np.append(net_dataidx_map[j], split[j])
-        else: # 否则，给每个party分别指定数量类别的数据
+        else: 
             times = [0 for i in range(K)]
             contain = []
-            ## BUG: 如果party数目小于类别数目，会存在有个别类别没有被任何一个party选中的情况，此时需要重选
             while 0 in times:
                 print("reselect of noniid-#label")
                 times = [0 for i in range(K)]
                 contain = []
                 for i in range(n_parties):
                     current = [i%K]
-                    times[i % K] += 1  # 第i%K个标签值+1，即times里存储的是当前label值有多少个party在选
+                    times[i % K] += 1  
                     j = 0
-                    # 因为num的意思是每个party所拥有的label数量，所以要保证current数组里有num个元素，每个元素代表一个标签值，不停的生成随机数直到满足条件为止
                     while (j < num):
-                        ind = random.randint(0, K - 1)  # 返回0到K-1的随机值，左右都包含，即有可能抽中0到K-1的任意一个值
-                        # bug 下面的括号没必要加
-                        if ind not in current:  # 如果随机出的标签值是新标签，加入current数组中并且times对应label的party数量+1
+                        ind = random.randint(0, K - 1) 
+                        if ind not in current:  
                             j = j + 1
                             current.append(ind)
                             times[ind] += 1
-                    contain.append(current)  # 把数组添加到contain中去,contain数组最终的样式为：
-                    # [[1,3],[2,3],...,[2,4]] 如果num为2
+                    contain.append(current)  
                 # print("contain: ", contain)
             net_dataidx_map = {i: np.ndarray(0, dtype=np.int64) for i in range(n_parties)}
             for i in range(K):
                 idx_k = np.where(y_train == i)[0]
                 np.random.shuffle(idx_k)
-                # times[i]代表当前label值有几个party选中了，然后把idx_k平分为几份
                 split = np.array_split(idx_k, times[i])
                 ids = 0
                 for j in range(n_parties):
@@ -264,7 +250,6 @@ def partition_data(dataset="emnist", datadir="data/", split="default", logdir="l
                         ids += 1
 
     elif partition == "iid-diff-quantity":
-        # 直接对所有的训练数据，不分标签进行打乱重组然后切分，与homo的区别就在于有的party数据多有的少，homo是均分
         idxs = np.random.permutation(n_train)
         min_size = 0
         if n_parties < 500:
@@ -298,12 +283,6 @@ def read_data_partition():
             pkl_file = open("files/" + file, 'rb')
             data = pickle.load(pkl_file)
             print(file)
-            """
-            Data format
-            e.g., emnist_noniid-#label3_50.pkl
-            一个列表包含了50个dict，每个dict为一个party的数据
-            每个dict里有四个数组项：train_X, train_y, test_X, test_y，即party包含的数据信息，有n条
-            """
             net_cls_counts = []
             for index in range(len(data)): # Index is the party number
                 target_train = data[index]["train_y"]
@@ -314,8 +293,8 @@ def read_data_partition():
                 # Find how many labels do the party have, e.g., set_train is (3,8,9) which means this party only have data with label 3,8,9 in its training set
                 set_train = set(target_train)
                 set_test = set(target_test)
-                overall = set_train | set_test  # 求并集
-                # To find whether the test set have labels that don't included in the training set, 错误检查
+                overall = set_train | set_test  
+                # To find whether the test set have labels that don't included in the training set
                 if len(overall - set_train) != 0:
                     print(file, index, len(target_train), len(target_test))
             print(net_cls_counts)
@@ -368,9 +347,6 @@ if __name__ == '__main__':
             if os.path.exists(file_name):
                 print("Dataset partition %s_%s_%s_%d.pkl already exists, work done." % (dtset, split, partition, n_parties))
             else:
-                """
-                net_dataidx_map 是一个dict，有num_party个项，每个项是一个数组，比如0这个项对应的数组就是party 0有2800个数据，每个数据是一个索引值，意思是party 0有2800个数据（包括训练和测试集合），对应原来dataset的索引值
-                """
                 X, y, net_dataidx_map, traindata_cls_counts = partition_data(dataset=dtset, partition=partition,split=split,
                                                      n_parties=n_parties,num_label=num_label)
 
@@ -381,7 +357,7 @@ if __name__ == '__main__':
                     n = map.shape[0]
                     ratio = c.ratio
                     while True:
-                        idxs = np.random.permutation(n)  # 随机打乱
+                        idxs = np.random.permutation(n)  
                         map = map[idxs]
                         train_num = int(n * ratio[0])
                         train_idx = map[0:train_num]
@@ -397,8 +373,8 @@ if __name__ == '__main__':
                         set_train = set(train_y)
                         set_validation = set(validation_y)
                         set_test = set(test_y)
-                        overall = set_train | set_test | set_validation  # 求并集
-                        if len(overall - set_train) == 0:  # 必须保证训练集里包含所有的标签数据
+                        overall = set_train | set_test | set_validation  
+                        if len(overall - set_train) == 0:  
                             break
                         else:
                             # break
@@ -412,7 +388,6 @@ if __name__ == '__main__':
                         "test_X": test_X,
                         "test_y": test_y,
                     }
-                    # count_result一个dict统计了各个类数据的数量
                     count_result = dict(Counter(train_y))
                     counts = {}
                     for j in range(num_label):

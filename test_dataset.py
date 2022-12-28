@@ -10,12 +10,6 @@ if __name__ == '__main__':
         print(data[0]['train_y'].shape)
         print(data[0]['test_X'].shape)
         print(data[0]['test_y'].shape)
-        """
-        Data format
-        e.g., emnist_noniid-#label3_50.pkl
-        一个列表包含了50个dict，每个dict为一个party的数据
-        每个dict里有四个数组项：train_X, train_y, test_X, test_y，即party包含的数据信息，有n条
-        """
         net_cls_counts = []
         for index in range(len(data)): # Index is the party number
             target_train = data[index]["train_y"]
@@ -26,6 +20,6 @@ if __name__ == '__main__':
             # Find how many labels do the party have, e.g., set_train is (3,8,9) which means this party only have data with label 3,8,9 in its training set
             set_train = set(target_train)
             set_test = set(target_test)
-            overall = set_train | set_test  # 求并集
-            # To find whether the test set have labels that don't included in the training set, 错误检查
+            overall = set_train | set_test  
+            # To find whether the test set have labels that don't included in the training set
         print(net_cls_counts)

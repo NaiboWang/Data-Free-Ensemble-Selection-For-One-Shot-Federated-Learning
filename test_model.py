@@ -32,7 +32,6 @@ class TimeUtil(object):
     @classmethod
     def parse_timezone(cls, timezone):
         """
-        解析时区表示
         :param timezone: str eg: +8
         :return: dict{symbol, offset}
         """
@@ -47,7 +46,6 @@ class TimeUtil(object):
 
     @classmethod
     def convert_timezone(cls, dt, timezone="+0"):
-        """默认是utc时间，需要"""
         result = cls.parse_timezone(timezone)
         symbol = result['symbol']
 
@@ -74,7 +72,7 @@ def generate_timestamp():
 def convert_report_to_json(a):
     b = deepcopy(a)
     for key in b:
-        if key.find(".0") >= 0:  # 去掉key键的.0
+        if key.find(".0") >= 0:
             a[key.replace(".0", "")] = a.pop(key)
     return a
 

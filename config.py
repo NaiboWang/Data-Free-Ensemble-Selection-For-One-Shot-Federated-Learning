@@ -6,7 +6,7 @@ exp_config = {
     "batch": 201,  # which batch of experiment
     "batch_ensemble":20100, # which batch of the final written results
     "selection_method":"mixed", # how to select the model inside a cluster, data, CV or mixed
-    "indexes": [],  # 方法会自动修改
+    "indexes": [],  # don't need to specify, algorithms can automatically modify
     "partition": "",
     "partitions" : ["iid-diff-quantity", "homo", "noniid-labeldir", "-1"],
     "split": "balanced",
@@ -14,8 +14,8 @@ exp_config = {
     "device":"cuda:0",
     "party_num": 10,
     "model":"SpinalNet",
-    "K": 2,  # 选几个cilents
-    "cluster_method": "",  # 聚类方法
+    "K": 2, 
+    "cluster_method": "", 
     "last_layer":True, # whether only read the last layer's parameter to do the clustering
     "layer": 0, # which layer to do the clustering, 0 means all layers
     "dr_method":["noDimensionReduction", 0.3], # Dimension Reduction Method, [noDimensionReduction/PCA/Kernel_PCA, 0.3 (What percentage of dimensions do we want to keep) ]

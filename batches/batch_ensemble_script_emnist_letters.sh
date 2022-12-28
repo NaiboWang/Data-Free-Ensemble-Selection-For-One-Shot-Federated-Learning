@@ -42,7 +42,7 @@ bash batch_ensemble_clustering_emnist_letters.sh $batch $batch_ensemble noDimens
 # original
 bash batch_ensemble_clustering_emnist_letters.sh $batch $batch_ensemble noDimensionReduction $model 0 $selection_method 0 0 "original"
 
-if [ $5 -gt 0 ] # 第五个参数大于1才真的跑 为0只是生成脚本
+if [ $5 -gt 0 ] 
 then
   cd ..
   bash exp_results/shells/batch_ensemble_$batch_ensemble\_baselines.sh

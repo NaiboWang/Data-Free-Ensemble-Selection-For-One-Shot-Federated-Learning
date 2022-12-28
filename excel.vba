@@ -1,5 +1,5 @@
 Sub generate_all_tables()
-Dim SEMR '修改RC13的13到指定数量方法数
+Dim SEMR
 SEMR = 26 + 26 + 26 + 26 + 15
 sheetname = getSheetName()
 generate_pivotTable sheetname, SEMR
@@ -22,7 +22,7 @@ Sub generate_pivotTable(sheetname, SEMR)
     Sheets.Add
     ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
         "exp_results_2212_2112_2016_2018!R1C1:R11943C16", Version:=7). _
-        CreatePivotTable TableDestination:="Sheet2!R3C1", TableName:="数据透视表1", _
+        CreatePivotTable TableDestination:="Sheet2!R3C1", TableName:="PivotTable1", _
         DefaultVersion:=7
     Sheets("Sheet1").Select
     Cells(3, 1).Select

@@ -28,7 +28,7 @@ def CV_selection(config):
     test_results = list(ensemble_selection_results.find(
         {"meta_data": meta_data, "model": config.model, "batch": config.batch, "party_num": party_num, "ensemble": None,
          "parties": {"$size": 1  # Find the test results in the combination contains only one model
-                     }}))  # 查找原始测试数据集的测试结果
+                     }}))
     assert len(test_results) == party_num + 1
     for index in range(len(test_results)):
         local_validation_accuracy = test_results[index]["local_validation_accuracy"]
@@ -36,18 +36,18 @@ def CV_selection(config):
         if party != -1:  # skip -1 which is the oracle
             party_local_validation_accuracies.append(
                 (party, local_validation_accuracy))
-    # 按照元组第二个键降序排序
+
     party_local_validation_accuracies = sorted(party_local_validation_accuracies,
                                                key=lambda party_acc: party_acc[1], reverse=True)
-    # print(party_local_validation_accuracies)  # 测试数据集大小是否正确以及是否正确排序
+    # print(party_local_validation_accuracies)
     indexes = []
     for i in range(K):
         indexes.append(party_local_validation_accuracies[i][0])
     # print(indexes)
     indexes.sort()
     # print(indexes)
-    # funcName = sys._getframe().f_back.f_code.co_name # 被调用函数名
-    funcName = sys._getframe().f_code.co_name  # 当前函数名
+    # funcName = sys._getframe().f_back.f_code.co_name # function name of callee
+    funcName = sys._getframe().f_code.co_name  # current function name
     return indexes, funcName, party_local_validation_accuracies
 
 
@@ -66,10 +66,10 @@ def data_selection(config):
         party_dataset_amount.append((index, len(targets)))
         # print(index, len(targets))
         total += len(targets)
-    # 按照元组第二个键降序排序
+
     party_dataset_amount = sorted(party_dataset_amount, key=lambda party_dataset_amount: party_dataset_amount[1],
                                   reverse=True)
-    # print(total, total / 280000, party_dataset_amount)  # 测试数据集大小是否正确以及是否正确排序
+    # print(total, total / 280000, party_dataset_amount)
 
     indexes = []
     for i in range(K):
@@ -77,20 +77,20 @@ def data_selection(config):
     # print(indexes)
     indexes.sort()
     # print(indexes)
-    # funcName = sys._getframe().f_back.f_code.co_name # 被调用函数名
-    funcName = sys._getframe().f_code.co_name  # 当前函数名
+    # funcName = sys._getframe().f_back.f_code.co_name
+    funcName = sys._getframe().f_code.co_name
     return indexes, funcName, party_dataset_amount
 
 
 def random_selection(config):
     K = config["K"]
     party_num = config["party_num"]
-    # 生成[0,party_num-1]内的K个不重复随机整数，即从全部的clients中随机选K个clients
+
     random_indexes = list(random.sample(range(party_num - 1), K))
     random_indexes.sort()
     # print(random_indexes)
-    # funcName = sys._getframe().f_back.f_code.co_name # 被调用函数名
-    funcName = sys._getframe().f_code.co_name  # 当前函数名
+    # funcName = sys._getframe().f_back.f_code.co_name
+    funcName = sys._getframe().f_code.co_name
     return random_indexes, funcName, None
 
 
@@ -98,25 +98,25 @@ def traverse_selection(config):
     selections = config.additional_parameters[0]
     i = config.additional_parameters[1]
     indexes = selections[i]
-    funcName = sys._getframe().f_code.co_name  # 当前函数名
+    funcName = sys._getframe().f_code.co_name
     print(indexes)
     # raise OSError("Traverse Selection")
     return indexes, funcName, None
 
 
 def oracle(config):
-    funcName = sys._getframe().f_code.co_name  # 当前函数名
+    funcName = sys._getframe().f_code.co_name
     return [-1], funcName, None
 
 
 def all_selection(config):
     party_num = config["party_num"]
     indexes = [i for i in range(party_num)]
-    funcName = sys._getframe().f_code.co_name  # 当前函数名
+    funcName = sys._getframe().f_code.co_name
     return indexes, funcName, None
 
 
-def get_all_situations(length):  # 生成所有的情况
+def get_all_situations(length):
     if length == 1:
         return ["0", "1"]
     combination = get_all_situations(length - 1)
@@ -155,7 +155,7 @@ if __name__ == '__main__':
                     k += 1
                 if len(selection) > 0:
                     selections.append(selection)
-            print(len(selections), selections)  # 生成所有的情况
+            print(len(selections), selections)
             for i in range(len(selections)):
                 try:
                     c.additional_parameters = [selections, i]

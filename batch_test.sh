@@ -64,8 +64,8 @@ num_classes=${config[4]}
 input_channels=${config[5]}
 
 
-for element in ${partition[@]} # 遍历数组
-#也可以写成for element in ${array[*]}
+for element in ${partition[@]} # Traverse all partitions
+# Also can use: for element in ${array[*]}
 do
   for i in $(seq -1 $[party_num - 1])
   do
