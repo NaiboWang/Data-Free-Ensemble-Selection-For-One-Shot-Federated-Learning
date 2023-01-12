@@ -166,13 +166,8 @@ def read_parameters(config, flatten = True):
             # print(model_path)
             config_c = copy.deepcopy(config)
             config_c.device = "cpu"
-            try:
-                model = get_model(config_c)
-                model.load_state_dict(torch.load(model_path, map_location="cpu"))
-            except:
-                print("Change model class number to 62")
-                model = get_model(config_c, 62)
-                model.load_state_dict(torch.load(model_path,map_location=torch.device('cpu'))) # ensure models are loaded via cpu and main memory, not gpu cuda memory
+            model = get_model(config_c)
+            model.load_state_dict(torch.load(model_path, map_location="cpu"))
             weights = model.state_dict()
             all_weights.append((index,copy.deepcopy(weights)))
         filtered_weights = []
@@ -361,13 +356,8 @@ def model_averging(config):
     #     model = effnetv2_l(config.num_classes)
     # elif config.model == "efficientnet-b7":
     #     model = EfficientNet.from_name('efficientnet-b7', in_channels=config.input_channels,num_classes=config.num_classes)
-    try:
-        model = get_model(config)
-        model.load_state_dict(w_avg)
-    except:
-        print("Change model class number to 62")
-        model = get_model(config, 62)
-        model.load_state_dict(w_avg)
+    model = get_model(config)
+    model.load_state_dict(w_avg)
     # model = model.to(config.device)
     model.eval()
     batch_size_test = 10

@@ -377,7 +377,6 @@ if __name__ == '__main__':
                         if len(overall - set_train) == 0:  
                             break
                         else:
-                            # break
                             print(overall - set_train, set_train)
                             print(f"Retry Partition for party {i} with n={n}")
                     result = {
