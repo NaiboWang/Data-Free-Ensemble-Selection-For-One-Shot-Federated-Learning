@@ -86,7 +86,8 @@ def main(config=None):
         elif c.weights == "data_size":
             result = max_voting(dt[1:], weights)
         if i == 0:
-            print("weigits", weights)
+            # print("weigits", weights)
+            pass
         voting_results.append(float(result))
         labels.append(combine[i][0])
     a = convert_report_to_json(classification_report(labels, voting_results, output_dict=True))
@@ -100,7 +101,7 @@ def main(config=None):
     with open(output_test_accuracy_file, "w") as f:
         output_info = {
             "timestamp":ts,
-            "model":c.model,
+            "model": c.model,
             "parties": c.indexes,
             "ensemble": 1,
             "ID": str(c.indexes),

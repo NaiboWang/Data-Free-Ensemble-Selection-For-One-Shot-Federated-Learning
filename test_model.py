@@ -32,6 +32,7 @@ class TimeUtil(object):
     @classmethod
     def parse_timezone(cls, timezone):
         """
+        解析时区表示
         :param timezone: str eg: +8
         :return: dict{symbol, offset}
         """
@@ -46,6 +47,7 @@ class TimeUtil(object):
 
     @classmethod
     def convert_timezone(cls, dt, timezone="+0"):
+        """默认是utc时间，需要"""
         result = cls.parse_timezone(timezone)
         symbol = result['symbol']
 
@@ -72,7 +74,7 @@ def generate_timestamp():
 def convert_report_to_json(a):
     b = deepcopy(a)
     for key in b:
-        if key.find(".0") >= 0:
+        if key.find(".0") >= 0:  # 去掉key键的.0
             a[key.replace(".0", "")] = a.pop(key)
     return a
 
@@ -81,16 +83,16 @@ DATASET_DIR, MODEL_DIR = get_path()
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='index HHH')
     parser.add_argument('--index', default=3, type=int, help='index')
-    parser.add_argument('--partition', default="noniid-#label45", type=str, help='partition')
-    parser.add_argument('--split', default="cifar100", type=str)
+    parser.add_argument('--partition', default="homo", type=str, help='partition')
+    parser.add_argument('--split', default="svhn", type=str)
     parser.add_argument('--device', default="cuda:4", type=str, help='partition methods')
-    parser.add_argument('--dataset', default="cifar100", type=str, help='partition methods')
-    parser.add_argument('--party_num', default=5, type=int, help='partition methods')
-    parser.add_argument('--batch', default=221, type=int, help='')
+    parser.add_argument('--dataset', default="svhn", type=str, help='partition methods')
+    parser.add_argument('--party_num', default=200, type=int, help='partition methods')
+    parser.add_argument('--batch', default=311, type=int, help='')
     parser.add_argument('--input_channels', default=3, type=int, help='')
-    parser.add_argument('--num_classes', default=100, type=int, help='')
+    parser.add_argument('--num_classes', default=10, type=int, help='')
     parser.add_argument('--save', default=1, type=int, help='if save the test result')
-    parser.add_argument('--model', default="resnet50", type=str, help='model name')
+    parser.add_argument('--model', default="resnet18", type=str, help='model name')
     args = parser.parse_args()
     print("Args", args)
     device = args.device
@@ -98,9 +100,13 @@ if __name__ == '__main__':
     meta_data = "%s_%s_%s_%s_b%d" % (args.dataset, args.split,args.model, args.partition, args.batch)
     save_dir = MODEL_DIR + "models/" + meta_data
     model_path = save_dir + "/party_%d_%d.pkl" % (args.index, args.party_num)
-
-    model = get_model(args)
-    model.load_state_dict(torch.load(model_path, map_location=device))
+    try:
+        model = get_model(args)
+        model.load_state_dict(torch.load(model_path, map_location=device)) # need to specific GPU device otherwise will cause error if one of the GPUs is full
+    except:
+        print("Change model class number to 62")
+        model = get_model(args, 62)
+        model.load_state_dict(torch.load(model_path, map_location=device))
     model = model.to(device)
     model.eval()
 
@@ -137,6 +143,8 @@ if __name__ == '__main__':
         validation_accuracy = test_on_dataset(args, validation_feature, validation_target, model, device, name="validation")
         test_accuracy = test_on_dataset(args, test_feature, test_target, model, device, name="test")
 
+        start_time = time.time()
+
         # Test who;e test accuracy
         correct = 0
         total = 0
@@ -160,6 +168,8 @@ if __name__ == '__main__':
         # print(correct,total, len(results[0]),len(results[1]))
         whole_test_accuracy = correct / total * 100
         print(f"Whole test accuracy: {round(whole_test_accuracy,4)}%")
+        end_time = time.time()
+        print("Time cost for {} images of the model {}: {} seconds".format(total, args.model, end_time - start_time))
         a = convert_report_to_json(
             classification_report(np.asarray(results)[1, :], np.asarray(results)[0, :], output_dict=True))
 
@@ -171,7 +181,7 @@ if __name__ == '__main__':
         if args.save == 1:
             with open(output_test_accuracy_file, "w") as f:
                 output_info = {
-                    "timestamp":ts,
+                    "timestamp": ts,
                     "batch": args.batch,
                     "model": args.model,
                     "parties": [args.index],

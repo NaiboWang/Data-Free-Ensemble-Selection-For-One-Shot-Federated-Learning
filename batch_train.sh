@@ -1,4 +1,4 @@
-# Train models
+# 训练模型
 config_emnist_digits=(
 201 # batch_size
 noniid-\#label3
@@ -6,6 +6,15 @@ noniid-\#label3
 'digits' # split
 10 # num_classes
 1 # input_channels
+#[5,10,100,200,400]
+)
+config_svhn=(
+201 # batch_size
+noniid-\#label3
+"svhn" # dataset
+'svhn' # split
+10 # num_classes
+3 # input_channels
 #[5,10,100,200,400]
 )
 config_emnist_letters=(
@@ -46,7 +55,7 @@ noniid-\#label45
 )
 # Modify this part every time
 party_num=100
-device="cuda:14"
+device="cuda:2"
 config=("${config_emnist_letters[@]}")
 model="resnet50"
 
@@ -64,7 +73,8 @@ input_channels=${config[5]}
 
 
 #echo $(seq 0 $[party_num - 1])
-for element in ${partition[@]} 
+for element in ${partition[@]} # 遍历数组
+#也可以写成for element in ${array[*]}
 do
   for i in $(seq 0 $[party_num - 1])
   do

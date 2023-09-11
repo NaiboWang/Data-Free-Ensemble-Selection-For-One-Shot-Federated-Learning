@@ -12,9 +12,12 @@ import torch
 from commandline_config import Config
 from prettytable import PrettyTable
 from sklearn.decomposition import PCA, KernelPCA
+from sklearn.manifold import TSNE
 from sklearn.metrics import classification_report, cohen_kappa_score
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import pandas as pd
+from torch.backends import cudnn
+
 from model_config import get_model
 from config import get_label_numbers, exp_config
 from dbconfig import get_path
@@ -24,13 +27,25 @@ from test_model import generate_timestamp, get_whole_test_set, convert_report_to
 
 DATASET_DIR, MODEL_DIR = get_path()
 
+def setup_seed(seed):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.cuda.manual_seed(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    cudnn.deterministic = True
+
 def repeat(selection_method=None, repeat_times=50, config=None, qualifier=""):
     start_time = time.time()
     average_accuracy = 0.0
     average_fscore = 0.0
     reports = []
     for i in range(repeat_times):  # repeat repeat_times times
+        start_time = time.time()
         indexes, funcName, additional_information = selection_method(config)
+        end_time = time.time()
+        selection_method_name = selection_method.__name__
+        print("Running time for selection {}: {} seconds".format(selection_method_name, end_time - start_time))
         print("indexes", indexes)
         config["indexes"] = indexes
         if config.avg == "none": # if not conduct model averaging:
@@ -63,9 +78,10 @@ def repeat(selection_method=None, repeat_times=50, config=None, qualifier=""):
         "average_fscore": average_fscore,
         "reports": reports,
     }
-    with open(MODEL_DIR + "exp_results/data/%s.json" % ts, "w") as f:
-        ensemble_selection_exp_results.insert_one(output_info)
-        json.dump(output_info, f)
+    if config.save:
+        with open(MODEL_DIR + "exp_results/data/%s.json" % ts, "w") as f:
+            json.dump(output_info, f)
+            ensemble_selection_exp_results.insert_one(output_info)
 
 def read_distribution(config):
     party_num = config["party_num"]
@@ -106,13 +122,18 @@ def read_distribution(config):
     party_dataset_distribution = scaler.fit_transform(party_dataset_distribution)
     return party_dataset_distribution, filtered_indexes
 
-def box_plot_outliers(s):
-    q1, q3 = s.quantile(.1), s.quantile(.75)
+def box_plot_outliers(s, p_low=0.25, p_high=0.75, s2=0.5):
+    print("p_low:", p_low, "p_high:", p_high, "s2:", s2)
+    q1, q3 = s.quantile(p_low), s.quantile(p_high)
+    q0 = s.quantile(0)
+    assert q0 == min(s)
     iqr = q3 - q1
-    print(iqr)
-    low = q1 - 1.5 * iqr
+    print("iqr:", iqr, "q1:", q1, "q3:", q3)
+    # low = q1 - s2 * iqr
+    low = q0 + s2 * iqr
     outlier = s.mask(s<low)
     indexes = np.where(pd.isna(np.array(outlier)))
+    print("remove outliers:", len(indexes[0]))
     return outlier, indexes
 
 
@@ -123,7 +144,7 @@ def get_outliers(config):
         {"meta_data": meta_data, "model": config.model, "batch": config.batch, "party_num": config.party_num,
          "ensemble": None,
          "parties": {"$size": 1  # Find the test results in the combination contains only one model
-                     }})) 
+                     }}))  # 查找原始测试数据集的测试结果
     party_local_validation_accuracies = []
     for index in range(len(test_results)):
         local_validation_accuracy = test_results[index]["local_validation_accuracy"]
@@ -136,12 +157,12 @@ def get_outliers(config):
     for (i, acc) in party_local_validation_accuracies:
         vaccs.append(acc)
     df = pd.DataFrame(vaccs)
-    outliers = df.apply(box_plot_outliers)
+    outliers = df.apply(box_plot_outliers, p_low=config.p_low, p_high=config.p_high, s2=config.s)
     indexes = outliers[0][1][0]
     return indexes
 
 
-def read_parameters(config, flatten = True):
+def read_parameters(config, flatten = True, filter=True):
     all_weights, flatten_weights = [], []
     party_num = config["party_num"]
     meta_data = "%s_%s_%s_%s_b%d" % (config["dataset"], config["split"], config.model, config["partition"], config["batch"])
@@ -160,16 +181,27 @@ def read_parameters(config, flatten = True):
         file_name += "_original"
     file_name += ".pkl"
     if not os.path.exists(DATASET_DIR + "files/cluster_preprocess/"+file_name):
-        indexes = get_outliers(config)
-        for index in range(party_num):
+        if filter:
+            indexes = get_outliers(config)
+        else:
+            indexes = []
+        length = party_num
+        for index in range(length):
             model_path = save_dir + "/party_%d_%d.pkl" % (index, party_num)
             # print(model_path)
             config_c = copy.deepcopy(config)
             config_c.device = "cpu"
-            model = get_model(config_c)
-            model.load_state_dict(torch.load(model_path, map_location="cpu"))
+            try:
+                model = get_model(config_c)
+                model.load_state_dict(torch.load(model_path, map_location="cpu"))
+            except:
+                print("Change model class number to 62")
+                model = get_model(config_c, 62)
+                model.load_state_dict(torch.load(model_path,map_location=torch.device('cpu'))) # ensure models are loaded via cpu and main memory, not gpu cuda memory
             weights = model.state_dict()
             all_weights.append((index,copy.deepcopy(weights)))
+            if index % 100 == 0:
+                print("Read %d models" % index)
         filtered_weights = []
         filtered_indexes = []
         for i in range(len(all_weights)):
@@ -180,6 +212,7 @@ def read_parameters(config, flatten = True):
         # for key in model.state_dict().keys():
         #     print(key)
         if flatten:
+            # 第一种方式，把所有的权值展平成一层，形成一个mXn的二维矩阵，m是party number，n是单个模型所有的节点数量，即纬度数
             all_keys = filtered_weights[0][1].keys()
             random_indexes = list(random.sample(range(len(all_keys) - 1), min(len(filtered_weights), int(len(all_keys) * 0.1))))
             random_indexes.sort()
@@ -188,6 +221,8 @@ def read_parameters(config, flatten = True):
                 print("random keys:", random_keys)
             for i in range(len(filtered_weights)):
                 index = filtered_weights[i][0]
+                if i % 100 == 0:
+                    print("Flatten %d models" % i)
                 weights = []
                 for key in filtered_weights[i][1].keys():
                     if config.last_layer:
@@ -242,10 +277,123 @@ def read_parameters(config, flatten = True):
                 pickle.dump(filtered_indexes, fid)
             print("Min Max Transformed and saved to %s." % file_name)
             return flatten_weights, filtered_indexes
-        else:
+        else: # for fedavg
             with open(DATASET_DIR + "files/cluster_preprocess/" + file_name, 'wb') as fid:
                 pickle.dump(all_weights, fid)
-            return all_weights
+            return all_weights, filtered_indexes
+    else:
+        pkl_file = open(DATASET_DIR + "files/cluster_preprocess/" + file_name, 'rb')
+        weights = pickle.load(pkl_file)
+        try:
+            pkl_file = open(DATASET_DIR + "files/cluster_preprocess/indexes_" + file_name, 'rb')
+            indexes = pickle.load(pkl_file)
+        except:
+            indexes = []
+        print("Load preprocessed weights.")
+        return weights, indexes
+
+
+def read_parameters_hetero(config, flatten = True, filter=True):
+    all_weights, flatten_weights = [], []
+    party_num = config["party_num"]
+    meta_data = "%s_%s_%s_%s_b%d" % (config["dataset"], config["split"], config.model, config["partition"], config["batch"])
+    save_dir = MODEL_DIR + "models/" + meta_data
+    if not os.path.exists(DATASET_DIR + "files/cluster_preprocess"):
+        os.mkdir(DATASET_DIR + "files/cluster_preprocess")
+    if config["normalization"] == 1:
+        file_name = meta_data + f"_be{config.batch_ensemble}_" + str(party_num) + "_" + config.dr_method[0]
+    else:
+        file_name = meta_data + f"_be{config.batch_ensemble}_" + str(party_num) + "_" + config.dr_method[0] + "_noNormalization"
+    if config.last_layer:
+        file_name += "_lastLayer"
+    if config.layer != 0:
+        file_name += "_layer%d" % config.layer
+    if not flatten:
+        file_name += "_original"
+    file_name += ".pkl"
+    if not os.path.exists(DATASET_DIR + "files/cluster_preprocess/"+file_name):
+        if filter:
+            indexes = get_outliers(config)
+        else:
+            indexes = []
+        for index in range(party_num):
+            model_path = save_dir + "/party_%d_%d.pkl" % (index, party_num)
+            # print(model_path)
+            config_c = copy.deepcopy(config)
+            config_c.device = "cpu"
+            config_c.index = index
+            try:
+                model = get_model(config_c)
+                model.load_state_dict(torch.load(model_path, map_location="cpu"))
+            except:
+                print("Change model class number to 62")
+                model = get_model(config_c, 62)
+                model.load_state_dict(torch.load(model_path,map_location=torch.device('cpu'))) # ensure models are loaded via cpu and main memory, not gpu cuda memory
+            weights = model.state_dict()
+            all_weights.append((index,copy.deepcopy(weights)))
+        filtered_weights = []
+        filtered_indexes = []
+        for i in range(len(all_weights)):
+            index = all_weights[i][0]
+            if index not in indexes:
+                filtered_weights.append(all_weights[i])
+                filtered_indexes.append(index)
+        # 第一种方式，把所有的权值展平成一层，形成一个mXn的二维矩阵，m是party number，n是单个模型所有的节点数量，即纬度数
+        resnet_weights, spinalnet_weights = [], []
+        for i in range(len(filtered_weights)):
+            index = filtered_weights[i][0]
+            if index < config.party_num * 0.5:
+                weights = []
+                for key in filtered_weights[i][1].keys():
+                    if config.last_layer:
+                        layer_name = ['linear.weight', 'linear.bias']
+                        if key in layer_name:
+                            weight = filtered_weights[i][1][key].cpu().numpy().flatten()
+                            weights.extend(weight)
+                    else: # all layers
+                        weight = filtered_weights[i][1][key].cpu().numpy().flatten()
+                        weights.extend(weight)
+                resnet_weights.append(weights)
+            else:
+                weights = []
+                for key in filtered_weights[i][1].keys():
+                    if config.last_layer:
+                        layer_name =  ["fc_out.1.weight","fc_out.1.bias"]
+                        if key in layer_name:
+                            weight = filtered_weights[i][1][key].cpu().numpy().flatten()
+                            weights.extend(weight)
+                    else:
+                        weight = filtered_weights[i][1][key].cpu().numpy().flatten()
+                        weights.extend(weight)
+                spinalnet_weights.append(weights)
+            # flatten_weights.append(weights)
+        dimension = min(len(resnet_weights), len(spinalnet_weights))
+        if config.dr_method[0] == "PCA":
+            pca = PCA(n_components=dimension)
+            resnet_weights = pca.fit(resnet_weights).transform(resnet_weights)
+            pca = PCA(n_components=dimension)
+            spinalnet_weights = pca.fit(spinalnet_weights).transform(spinalnet_weights)
+        elif config.dr_method[0] == "Kernel_PCA":
+            kernel_pca = KernelPCA(n_components=dimension)
+            resnet_weights = kernel_pca.fit(resnet_weights).transform(resnet_weights)
+            kernel_pca = KernelPCA(n_components=dimension)
+            spinalnet_weights = kernel_pca.fit(spinalnet_weights).transform(spinalnet_weights)
+        elif config.dr_method[0] == "TSNE":
+            tsne = TSNE(n_components=dimension)
+            resnet_weights = tsne.fit(resnet_weights).transform(resnet_weights)
+            tsne = TSNE(n_components=dimension)
+            spinalnet_weights = tsne.fit(spinalnet_weights).transform(spinalnet_weights)
+        flatten_weights = np.concatenate((resnet_weights,spinalnet_weights),axis=0)
+        assert len(flatten_weights) == len(filtered_indexes)
+        if config["normalization"] == 1:
+            mm = MinMaxScaler()
+            flatten_weights = mm.fit_transform(flatten_weights)
+        with open(DATASET_DIR + "files/cluster_preprocess/" + file_name, 'wb') as fid:
+            pickle.dump(flatten_weights, fid)
+        with open(DATASET_DIR + "files/cluster_preprocess/indexes_" + file_name, 'wb') as fid:
+            pickle.dump(filtered_indexes, fid)
+        print("Min Max Transformed and saved to %s." % file_name)
+        return flatten_weights, filtered_indexes
     else:
         pkl_file = open(DATASET_DIR + "files/cluster_preprocess/" + file_name, 'rb')
         weights = pickle.load(pkl_file)
@@ -253,7 +401,6 @@ def read_parameters(config, flatten = True):
         indexes = pickle.load(pkl_file)
         print("Load preprocessed weights.")
         return weights, indexes
-
 
 def get_dataset_amount(config):
     party_dataset_amount = []
@@ -277,7 +424,7 @@ def get_validation_accuracies(config):
     test_results = list(ensemble_selection_results.find(
         {"meta_data": meta_data, "model": config.model, "batch": config.batch, "party_num": config.party_num, "ensemble": None,
          "parties": {"$size": 1  # Find the test results in the combination contains only one model
-                     }})) 
+                     }}))  # 查找原始测试数据集的测试结果
     length_test = len(test_results)
     try:
         assert length_test == config.party_num + 1
@@ -329,7 +476,32 @@ def model_averging(config):
                 "support": -1
             }
         } # skip oracle model averaging
-    all_weights = read_parameters(config, flatten=False)
+    if config.dataset != "femnist":
+        all_weights, _ = read_parameters(config, flatten=False)
+    else:
+        all_weights = []
+        length = config.party_num
+        party_num = config["party_num"]
+        meta_data = "%s_%s_%s_%s_b%d" % (
+        config["dataset"], config["split"], config.model, config["partition"], config["batch"])
+        save_dir = MODEL_DIR + "models/" + meta_data
+        for index in range(length):
+            model_path = save_dir + "/party_%d_%d.pkl" % (index, party_num)
+            # print(model_path)
+            config_c = copy.deepcopy(config)
+            config_c.device = "cpu"
+            try:
+                model = get_model(config_c)
+                model.load_state_dict(torch.load(model_path, map_location="cpu"))
+            except:
+                print("Change model class number to 62")
+                model = get_model(config_c, 62)
+                model.load_state_dict(torch.load(model_path, map_location=torch.device(
+                    'cpu')))  # ensure models are loaded via cpu and main memory, not gpu cuda memory
+            weights = model.state_dict()
+            all_weights.append((index, copy.deepcopy(weights)))
+            if index % 100 == 0:
+                print("Read %d models" % index)
     w = []
     party_dataset_amount = get_dataset_amount(config)
     n_samples = []
@@ -356,8 +528,13 @@ def model_averging(config):
     #     model = effnetv2_l(config.num_classes)
     # elif config.model == "efficientnet-b7":
     #     model = EfficientNet.from_name('efficientnet-b7', in_channels=config.input_channels,num_classes=config.num_classes)
-    model = get_model(config)
-    model.load_state_dict(w_avg)
+    try:
+        model = get_model(config)
+        model.load_state_dict(w_avg)
+    except:
+        print("Change model class number to 62")
+        model = get_model(config, 62)
+        model.load_state_dict(w_avg)
     # model = model.to(config.device)
     model.eval()
     batch_size_test = 10

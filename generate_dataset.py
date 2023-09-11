@@ -5,8 +5,9 @@ import pickle
 import random
 import re
 from collections import Counter
-
-
+from torchvision.datasets import MNIST, utils
+from PIL import Image
+import os.path
 import commandline_config
 import numpy as np
 
@@ -20,6 +21,64 @@ logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+class FEMNIST(MNIST):
+    """
+    This dataset is derived from the Leaf repository
+    (https://github.com/TalwalkarLab/leaf) pre-processing of the Extended MNIST
+    dataset, grouping examples by writer. Details about Leaf were published in
+    "LEAF: A Benchmark for Federated Settings" https://arxiv.org/abs/1812.01097.
+    """
+    resources = [
+        ('https://raw.githubusercontent.com/tao-shen/FEMNIST_pytorch/master/femnist.tar.gz',
+         '59c65cec646fc57fe92d27d83afdf0ed')]
+
+    def __init__(self, root, train=True, transform=None, target_transform=None,
+                 download=False):
+        super(MNIST, self).__init__(root, transform=transform,
+                                    target_transform=target_transform)
+        self.train = train
+
+        if download:
+            self.download()
+
+        if not self._check_exists():
+            raise RuntimeError('Dataset not found.' +
+                               ' You can use download=True to download it')
+        if self.train:
+            data_file = self.training_file
+        else:
+            data_file = self.test_file
+
+        self.data, self.targets, self.users_index = torch.load(os.path.join(self.processed_folder, data_file))
+
+    def __getitem__(self, index):
+        img, target = self.data[index], int(self.targets[index])
+        img = Image.fromarray(img.numpy(), mode='F')
+        if self.transform is not None:
+            img = self.transform(img)
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+        return img, target
+
+    def download(self):
+        """Download the FEMNIST data if it doesn't exist in processed_folder already."""
+        import shutil
+
+        if self._check_exists():
+            return
+
+        # utils.makedir_exist_ok(self.raw_folder)
+        # utils.makedir_exist_ok(self.processed_folder)
+
+        # download files
+        for url, md5 in self.resources:
+            filename = url.rpartition('/')[2]
+            utils.download_and_extract_archive(url, download_root=self.raw_folder, filename=filename, md5=md5)
+
+        # process and save as torch files
+        print('Processing...')
+        shutil.move(os.path.join(self.raw_folder, self.training_file), self.processed_folder)
+        shutil.move(os.path.join(self.raw_folder, self.test_file), self.processed_folder)
 
 class Cutout:
     def __init__(self, size=16, p=0.5):
@@ -54,6 +113,22 @@ def convert_pkl(dataset="emnist",split="digits"):
                                                 ]))
 
         test_set = torchvision.datasets.EMNIST('files/', split=split, train=False, download=True,
+                                               transform=torchvision.transforms.Compose([
+                                                   torchvision.transforms.ToTensor(),
+                                                   torchvision.transforms.Normalize(
+                                                       (0.1307,), (0.3081,))
+                                               ]))
+    elif dataset == "femnist":
+        train_set = FEMNIST('files/', train=True, download=True,
+                                                transform=torchvision.transforms.Compose([
+                                                    torchvision.transforms.RandomPerspective(),
+                                                    torchvision.transforms.RandomRotation(10, fill=(0,)),
+                                                    torchvision.transforms.ToTensor(),
+                                                    torchvision.transforms.Normalize(
+                                                        (0.1307,), (0.3081,))
+                                                ]))
+
+        test_set = FEMNIST('files/',  train=False, download=True,
                                                transform=torchvision.transforms.Compose([
                                                    torchvision.transforms.ToTensor(),
                                                    torchvision.transforms.Normalize(
@@ -109,15 +184,36 @@ def convert_pkl(dataset="emnist",split="digits"):
                                                 transform=test_transform)
     elif dataset == "tinyimagenet":
         pass
+    elif dataset == "svhn":
+        train_set = torchvision.datasets.SVHN('files/', split="train", download=True,
+                                      transform=torchvision.transforms.Compose(
+                                          [torchvision.transforms.ToTensor()]))
+        test_set = torchvision.datasets.SVHN('files/', split="test", download=True,
+                                     transform=torchvision.transforms.Compose([
+                                         torchvision.transforms.ToTensor(),
+                                     ]))
     train_set_X = train_set.data.tolist()
     test_set_X = test_set.data.tolist()
 
-    if commandline_config.commandline_config.check_type(train_set.targets) == "list":
-        train_set_y = train_set.targets
-        test_set_y = test_set.targets
+    try:
+        targets = train_set.targets
+    except:
+        targets = train_set.labels
+
+    if commandline_config.commandline_config.check_type(targets) == "list":
+        try:
+            train_set_y = train_set.targets
+            test_set_y = test_set.targets
+        except:
+            train_set_y = train_set.labels
+            test_set_y = test_set.labels
     else:
-        train_set_y = train_set.targets.tolist()
-        test_set_y = test_set.targets.tolist()
+        try:
+            train_set_y = train_set.targets.tolist()
+            test_set_y = test_set.targets.tolist()
+        except:
+            train_set_y = train_set.labels.tolist()
+            test_set_y = test_set.labels.tolist()
     train_set_X.extend(test_set_X)
     train_set_y.extend(test_set_y)
     emnist = {
@@ -166,36 +262,41 @@ def partition_data(dataset="emnist", datadir="data/", split="default", logdir="l
     elif partition == "noniid-labeldir":
         min_size = 0
         min_require_size = 120
-        K = num_label 
+        K = num_label  # 标签数量
 
         N = y_train.shape[0]
         np.random.seed(2020)
         net_dataidx_map = {}
 
-        
+        # 重复分配直到每个party的数据量都达到了最小需要的size
         while min_size < min_require_size:
             idx_batch = [[] for _ in range(n_parties)]
-            
+            # ?这里有时候会分配到某个party导致缺少一些标签，是否正常？比如party 0 只包含012345没有6789
             for k in range(K):
-                
+                # np.where 只有条件 (condition)，没有x和y，则输出满足条件 (标签为k) 元素的坐标
                 idx_k = np.where(y_train == k)[0]
                 np.random.shuffle(idx_k)
-                
+                # np.repeat 将第一个参数重复第二个参数次生成一个数组
 
                 proportions = np.random.dirichlet(np.repeat(beta, n_parties))
                 # logger.info("proportions1: ", proportions)
                 # logger.info("sum pro1:", np.sum(proportions))
                 ## Balance
-                
+                # 下面公式先判断idx_j的长度是否小于N/n_parties，如果是返回1否则0，再乘p
+                # zip(a,b)根据a和b的最短长度决定zip大小，然后分别输出a和b的对应元素值
+                # 下面这行的意思是，如果当前party的元素数量已经超过了N/n_parties则返回0，即不往数组里继续添加当前元素，否则返回对应比例
                 proportions = np.array([p * (len(idx_j) < N / n_parties) for p, idx_j in zip(proportions, idx_batch)])
                 # logger.info("proportions2: ", proportions)
                 proportions = proportions / proportions.sum()
                 # logger.info("proportions3: ", proportions)
+                # cumsum([1,2,3,1]) => [1,3,6,7], [:-1]去掉最后一个元素
                 proportions = (np.cumsum(proportions) * len(idx_k)).astype(int)[:-1]
                 # logger.info("proportions4: ", proportions)
-                
+                # split(ary, indices_or_sections, axis=0) :把一个数组从左到右按顺序切分,下面一行就是将idx_k这个标签对应的元素的数组按照生成好的分配规则切分之后放在idx_batch数组中
+                # https://blog.csdn.net/mingyuli/article/details/81227629
                 # [] + [1,2] = [1,2], [1] + [2,3] = [1,2,3]
                 idx_batch = [idx_j + idx.tolist() for idx_j, idx in zip(idx_batch, np.split(idx_k, proportions))]
+                # 小bug，不应该写在这里
                 min_size = min([len(idx_j) for idx_j in idx_batch])
                 # if K == 2 and n_parties <= 10:
                 #     if np.min(proportions) < 200:
@@ -207,41 +308,50 @@ def partition_data(dataset="emnist", datadir="data/", split="default", logdir="l
             net_dataidx_map[j] = idx_batch[j]
 
     elif partition > "noniid-#label0" and partition <= "noniid-#label999":
-        num = eval(partition[13:])  
+        num = eval(partition[13:])  # 得到#label后面的数字
         num -= 1
         K = num_label
         assert (num+1) * n_parties > num_label # ensure all labels are covered by n_parties
+        # 如何label后面的值为K，如数字数据集为10的时候，即需要给每个party分配所有的类别的数据
         if num == K:
+            # 每个party初始化一个空int数组
             net_dataidx_map = {i: np.ndarray(0, dtype=np.int64) for i in range(n_parties)}
             for i in range(K):
                 idx_k = np.where(y_train == i)[0]
                 np.random.shuffle(idx_k)
+                # 把idx_k平均切分成n_parties份
                 split = np.array_split(idx_k, n_parties)
+                # 往net_dataidx_map数组中添加split后的indexes
                 for j in range(n_parties):
                     net_dataidx_map[j] = np.append(net_dataidx_map[j], split[j])
-        else: 
+        else: # 否则，给每个party分别指定数量类别的数据
             times = [0 for i in range(K)]
             contain = []
+            ## BUG: 如果party数目小于类别数目，会存在有个别类别没有被任何一个party选中的情况，此时需要重选
             while 0 in times:
                 print("reselect of noniid-#label")
                 times = [0 for i in range(K)]
                 contain = []
                 for i in range(n_parties):
                     current = [i%K]
-                    times[i % K] += 1  
+                    times[i % K] += 1  # 第i%K个标签值+1，即times里存储的是当前label值有多少个party在选
                     j = 0
+                    # 因为num的意思是每个party所拥有的label数量，所以要保证current数组里有num个元素，每个元素代表一个标签值，不停的生成随机数直到满足条件为止
                     while (j < num):
-                        ind = random.randint(0, K - 1) 
-                        if ind not in current:  
+                        ind = random.randint(0, K - 1)  # 返回0到K-1的随机值，左右都包含，即有可能抽中0到K-1的任意一个值
+                        # bug 下面的括号没必要加
+                        if ind not in current:  # 如果随机出的标签值是新标签，加入current数组中并且times对应label的party数量+1
                             j = j + 1
                             current.append(ind)
                             times[ind] += 1
-                    contain.append(current)  
+                    contain.append(current)  # 把数组添加到contain中去,contain数组最终的样式为：
+                    # [[1,3],[2,3],...,[2,4]] 如果num为2
                 # print("contain: ", contain)
             net_dataidx_map = {i: np.ndarray(0, dtype=np.int64) for i in range(n_parties)}
             for i in range(K):
                 idx_k = np.where(y_train == i)[0]
                 np.random.shuffle(idx_k)
+                # times[i]代表当前label值有几个party选中了，然后把idx_k平分为几份
                 split = np.array_split(idx_k, times[i])
                 ids = 0
                 for j in range(n_parties):
@@ -250,6 +360,7 @@ def partition_data(dataset="emnist", datadir="data/", split="default", logdir="l
                         ids += 1
 
     elif partition == "iid-diff-quantity":
+        # 直接对所有的训练数据，不分标签进行打乱重组然后切分，与homo的区别就在于有的party数据多有的少，homo是均分
         idxs = np.random.permutation(n_train)
         min_size = 0
         if n_parties < 500:
@@ -283,6 +394,12 @@ def read_data_partition():
             pkl_file = open("files/" + file, 'rb')
             data = pickle.load(pkl_file)
             print(file)
+            """
+            Data format
+            e.g., emnist_noniid-#label3_50.pkl
+            一个列表包含了50个dict，每个dict为一个party的数据
+            每个dict里有四个数组项：train_X, train_y, test_X, test_y，即party包含的数据信息，有n条
+            """
             net_cls_counts = []
             for index in range(len(data)): # Index is the party number
                 target_train = data[index]["train_y"]
@@ -293,8 +410,8 @@ def read_data_partition():
                 # Find how many labels do the party have, e.g., set_train is (3,8,9) which means this party only have data with label 3,8,9 in its training set
                 set_train = set(target_train)
                 set_test = set(target_test)
-                overall = set_train | set_test  
-                # To find whether the test set have labels that don't included in the training set
+                overall = set_train | set_test  # 求并集
+                # To find whether the test set have labels that don't included in the training set, 错误检查
                 if len(overall - set_train) != 0:
                     print(file, index, len(target_train), len(target_test))
             print(net_cls_counts)
@@ -307,28 +424,9 @@ if __name__ == '__main__':
     config_emnist_balanced = [201, "emnist", 'balanced', 47, [5,10,100,200,400]]
     config_cifar10 = [211, "cifar10", 'cifar10', 10, [5,10,50,100,200]]
     config_cifar100 = [221, "cifar100", 'cifar100', 100, [5,10,20]]
-    
-    c = commandline_config.Config({
-        "dataset": "emnist",
-        "split": "digits",
-        "ID": 0,
-        "num_clients":[5,10,100,200,400],
-        "ratio": [0.7,0.1,0.2], # partition ratio for training/validation/test set
-    })
-
-    if c.split == "digits":
-        config = config_emnist_digits
-    elif c.split == "letters":
-        config = config_emnist_letters
-    elif c.split == "balanced":
-        config = config_emnist_balanced
-    elif c.split == "cifar10":
-        config = config_cifar10
-    elif c.split == "cifar100":
-        config = config_cifar100
-    config[0] = c.ID
-    config[4] = c.num_clients
-
+    config_femnist = [301, "femnist", 'femnist', 62, [3500]]
+    config_svhn = [311, "svhn", "svhn", 10, [200]]
+    config = config_svhn
     batch = config[0]
     dtset = config[1]
     split = config[2]
@@ -347,6 +445,9 @@ if __name__ == '__main__':
             if os.path.exists(file_name):
                 print("Dataset partition %s_%s_%s_%d.pkl already exists, work done." % (dtset, split, partition, n_parties))
             else:
+                """
+                net_dataidx_map 是一个dict，有num_party个项，每个项是一个数组，比如0这个项对应的数组就是party 0有2800个数据，每个数据是一个索引值，意思是party 0有2800个数据（包括训练和测试集合），对应原来dataset的索引值
+                """
                 X, y, net_dataidx_map, traindata_cls_counts = partition_data(dataset=dtset, partition=partition,split=split,
                                                      n_parties=n_parties,num_label=num_label)
 
@@ -355,9 +456,9 @@ if __name__ == '__main__':
                 for i in range(n_parties):
                     map = np.asarray(net_dataidx_map[i])
                     n = map.shape[0]
-                    ratio = c.ratio
+                    ratio = [0.7,0.1,0.2] # 训练集验证集测试集切分比例，[0.6,0.2,0.2],[0.5,0.25,0.25]
                     while True:
-                        idxs = np.random.permutation(n)  
+                        idxs = np.random.permutation(n)  # 随机打乱
                         map = map[idxs]
                         train_num = int(n * ratio[0])
                         train_idx = map[0:train_num]
@@ -373,10 +474,11 @@ if __name__ == '__main__':
                         set_train = set(train_y)
                         set_validation = set(validation_y)
                         set_test = set(test_y)
-                        overall = set_train | set_test | set_validation  
-                        if len(overall - set_train) == 0:  
+                        overall = set_train | set_test | set_validation  # 求并集
+                        if len(overall - set_train) == 0:  # 必须保证训练集里包含所有的标签数据
                             break
                         else:
+                            # break
                             print(overall - set_train, set_train)
                             print(f"Retry Partition for party {i} with n={n}")
                     result = {
@@ -387,6 +489,7 @@ if __name__ == '__main__':
                         "test_X": test_X,
                         "test_y": test_y,
                     }
+                    # count_result一个dict统计了各个类数据的数量
                     count_result = dict(Counter(train_y))
                     counts = {}
                     for j in range(num_label):
