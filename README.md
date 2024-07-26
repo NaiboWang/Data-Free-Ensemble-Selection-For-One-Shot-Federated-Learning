@@ -2,7 +2,13 @@
 
 This repository is the official implementation of the paper "Data-Free Diversity-Based Ensemble Selection for One-Shot Federated Learning" published in the Transactions on Machine Learning Research (TMLR).
 
-## Initialization
+## Supplementary Material
+
+The supplementary material for the paper can be found [here](supplementary_materials.pdf).
+
+## Code
+
+### Initialization
 
 1. Install the required packages.
 
@@ -29,7 +35,7 @@ This repository is the official implementation of the paper "Data-Free Diversity
 
     You will need to create a database whose name is `exps`, and create three tables in your `exps` database, which are `train_config`, `ensemble_selection_exp_results` and `ensemble_selection_results`. Also, you can change your database and table name at the `dbconfig.py` script after step 2.
 
-## Partition the dataset
+### Partition the dataset
 
 Use the following command to partition the dataset:
 
@@ -58,7 +64,7 @@ After partitioning the dataset, you will get 4 files in the `files` directory, w
 
 Every file will contains the training/validation/test set for all 100 clients, starts with 0. 
 
-## Generate/Train models based on the partitioned dataset
+### Generate/Train models based on the partitioned dataset
 
 To train a model on the partitioned dataset, you can use the following command:
 
@@ -85,7 +91,7 @@ python train_model.py --index 9 --partition homo --party_num 100 --split digits 
 
 After training the model, you will get a model file in the `models` directory.
 
-## Evaluate the models and get the output results of the models
+### Evaluate the models and get the output results of the models
 
 To evaluate the model, you can use the following command:
 
@@ -105,7 +111,7 @@ The test results and statistics will be saved to the dataset and also local file
 
 Before you run any ensemble selection algorithm, ensure that you have trained all models you need to select from by the `train_model.py` script, and already get tested results by the `test_model.py` script.
 
-## Run baseline algorithms
+### Run baseline algorithms
 
 Similar as the `batch ID`, we will have a `ensemble batch ID` for each run of the ensemble algorithms to distinguish ensemble selection results in batch.
 
@@ -125,7 +131,7 @@ python -u ensemble_selection_baselines.py --split cifar100 --dataset cifar100 --
 
 The `--batch` is the `batch ID` and the `--batch_ensemble` is the `ensemble batch ID`.
 
-## Run our DeDES algorithm
+### Run our DeDES algorithm
 
 Similarly, to run our DeDES algorithm, you can use the following command:
 
@@ -154,7 +160,7 @@ Then the results of the baselines and DeDES will be saved to the database in the
 
 ## Experimental data processing and visualization -->
 
-## Other Notes
+### Other Notes
 
 * `batch_train.sh`, `batch_test.sh` can help you to train and test models in batch.
 
