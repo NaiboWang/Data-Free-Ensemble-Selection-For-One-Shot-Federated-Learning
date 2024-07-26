@@ -1,5 +1,7 @@
 # Ensemble Selection algorithms for One-Shot Federated Learning in Machine Learning Model Market
 
+This repository is the official implementation of the paper "Data-Free Diversity-Based Ensemble Selection for One-Shot Federated Learning" published in the Transactions on Machine Learning Research (TMLR).
+
 ## Initialization
 
 1. Install the required packages.
@@ -188,3 +190,20 @@ sh C.sh # run the script C.sh in the directory of A/B
 [//]: # (python C.py # run the script C.py in the directory of A/B)
 
 [//]: # (```) -->
+
+## Citing this work
+
+If you find this code useful in your research, please consider citing:
+
+```bibtex
+@article{
+wang2023datafree,
+title={Data-Free Diversity-Based Ensemble Selection for One-Shot Federated Learning},
+author={Naibo Wang and Wenjie Feng and yuchen deng and Moming Duan and Fusheng Liu and See-Kiong Ng},
+journal={Transactions on Machine Learning Research},
+issn={2835-8856},
+year={2023},
+url={https://openreview.net/forum?id=ORMlg4g3mG},
+note={}
+}
+```
